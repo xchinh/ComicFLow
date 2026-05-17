@@ -1,0 +1,332 @@
+\documentclass[12pt, a4paper, twoside]{report}
+
+% =========================================================
+% Packages
+% =========================================================
+\usepackage{amssymb,epsfig,latexsym,multicol,array,hhline,fancyhdr}
+\usepackage{vntex}
+\usepackage{amsmath}
+\usepackage{lastpage}
+\usepackage{makecell}
+\usepackage[lined,boxed,commentsnumbered]{algorithm2e}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{enumitem}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage[table]{xcolor}
+\usepackage{tabularx,caption}
+\usepackage{colortbl}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{rotating}
+\usepackage{graphics}
+
+% =========================================================
+% Page geometry
+% =========================================================
+\usepackage[
+    a4paper,
+    top=2.6cm,
+    bottom=2.5cm,
+    left=2.5cm,
+    right=2.2cm,
+    headheight=32pt,
+    headsep=14pt,
+    footskip=28pt
+]{geometry}
+
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{tocloft}
+
+\usepackage{epsfig}
+\usepackage{tikz}
+\usetikzlibrary{arrows,snakes,backgrounds}
+
+% =========================================================
+% Extra packages
+% =========================================================
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[backend=biber,style=ieee]{biblatex}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+% =========================================================
+% Hyperlink and URL settings
+% =========================================================
+\urlstyle{same}
+\def\UrlBreaks{\do\/\do-}
+
+\hypersetup{
+    urlcolor=black,
+    linkcolor=black,
+    citecolor=black,
+    colorlinks=true
+}
+
+% =========================================================
+% Listings settings
+% =========================================================
+\lstset{
+    backgroundcolor=\color{blue!10},
+    basicstyle=\ttfamily,
+    columns=fullflexible,
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+
+% =========================================================
+% Theorem environments
+% =========================================================
+\newtheorem{theorem}{{\bf Theorem}}
+\newtheorem{property}{{\bf Property}}
+\newtheorem{proposition}{{\bf Proposition}}
+\newtheorem{corollary}[proposition]{{\bf Corollary}}
+\newtheorem{lemma}[proposition]{{\bf Lemma}}
+
+% =========================================================
+% Names
+% =========================================================
+\AtBeginDocument{\renewcommand*\contentsname{Contents}}
+\AtBeginDocument{\renewcommand*\refname{References}}
+
+% =========================================================
+% General layout
+% =========================================================
+\setlength{\parindent}{0.5cm}
+
+\setlist[itemize]{
+    leftmargin=1.2cm,
+    topsep=0.4\baselineskip,
+    itemsep=0.2em,
+    parsep=0pt,
+    after=\vspace{0.4\baselineskip}
+}
+
+% =========================================================
+% Table of Contents layout
+% =========================================================
+\setlength{\cftsecindent}{0em}
+\setlength{\cftsecnumwidth}{2.6em}
+
+% Subsection number 2.1, 2.2, ... starts under section title
+\setlength{\cftsubsecindent}{2.6em}
+\setlength{\cftsubsecnumwidth}{3.0em}
+
+% Subsubsection starts under subsection title
+\setlength{\cftsubsubsecindent}{5.6em}
+\setlength{\cftsubsubsecnumwidth}{3.8em}
+
+\setlength{\cftbeforesecskip}{3pt}
+
+% =========================================================
+% Header / Footer
+% =========================================================
+\pagestyle{fancy}
+\fancyhf{}
+
+\fancyhead[L]{%
+    \begin{tabular}{@{}rl@{}}
+        \includegraphics[width=8mm]{images/Common/hcmut.png}
+        &
+        \begin{tabular}[b]{@{}l@{}}
+            \normalsize\ttfamily Trường Đại học Bách khoa - ĐHQG TPHCM\\[-1pt]
+            \normalsize\ttfamily Khoa Khoa học và Kỹ thuật Máy tính
+        \end{tabular}
+    \end{tabular}
+}
+
+\fancyfoot[L]{\small\ttfamily Thương Mại Điện Tử  (CO3027)- HK252}
+\fancyfoot[R]{\small\ttfamily Trang \thepage/\pageref{LastPage}}
+
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+% =========================================================
+% Section depth
+% =========================================================
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{3}
+
+\makeatletter
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand\thesubsubsubsection{\thesubsubsection .\@alph\c@subsubsubsection}
+\newcommand\subsubsubsection{\@startsection{subsubsubsection}{4}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\normalfont\normalsize\bfseries}}
+\newcommand*\l@subsubsubsection{\@dottedtocline{3}{10.0em}{4.1em}}
+\newcommand*{\subsubsubsectionmark}[1]{}
+\makeatother
+
+% =========================================================
+% Colors
+% =========================================================
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+% =========================================================
+% Document
+% =========================================================
+\begin{document}
+
+% =========================================================
+% Title page
+% =========================================================
+\begin{titlepage}
+\thispagestyle{empty}
+
+% Căn lại bố cục trang bìa cho cân đối hơn
+\newgeometry{top=2.3cm,bottom=2.0cm,left=2.3cm,right=2.3cm}
+
+\begin{center}
+\normalsize ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH \\
+TRƯỜNG ĐẠI HỌC BÁCH KHOA \\
+KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH
+\end{center}
+
+\vspace{0.9cm}
+
+\begin{center}
+\includegraphics[width=2.8cm]{images/Common/hcmut.png}
+\end{center}
+
+\vspace{0.9cm}
+
+\begin{center}
+\bfseries
+\Large \textbf{THƯƠNG MẠI ĐIỆN TỬ (CO3027)} \\[0.45cm]
+\large Báo cáo Bài tập lớn \\[0.55cm]
+\huge \textbf{HỆ THỐNG THƯƠNG MẠI TRUYỆN TRANH SỐ}
+\end{center}
+
+\vspace{1.25cm}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{rll}
+Giảng viên hướng dẫn: & Trần Thị Quế Nguyệt &\\[0.1cm]
+Sinh viên thực hiện:  & Vũ Xuân Chính & 2210392 \\
+                      & Phạm Quang Minh  & 2212075 \\
+                      & Tôn Trọng Tín & 2033338 \\
+                      & Nguyễn Đoàn Bảo Kha & 2311390 \\
+                      & Phùng Xương Cận & 2210348 \\
+                      & Lê Anh Tú & 1915811 \\
+\end{tabular}
+\end{center}
+
+\vfill
+
+\begin{center}
+{\footnotesize TP. HỒ CHÍ MINH, 5/2026}
+\end{center}
+
+\restoregeometry
+\end{titlepage}
+
+% =========================================================
+% Front matter
+% Mục lục bắt đầu là Trang 1
+% =========================================================
+\pagestyle{fancy}
+\setcounter{page}{1}
+
+\renewcommand{\contentsname}{\bfseries\Large MỤC LỤC}
+
+\newpage
+\tableofcontents
+\thispagestyle{fancy}
+
+\newpage
+\listoffigures
+\thispagestyle{fancy}
+
+\newpage
+\listoftables
+\thispagestyle{fancy}
+
+\newpage
+\section*{Danh sách thành viên và phân công công việc}
+\thispagestyle{fancy}
+\renewcommand{\arraystretch}{1.5}
+
+\begin{center}
+\begin{tabular}{|c|c|p{6cm}|c|}
+\hline
+\textbf{Họ và tên} & \textbf{MSSV} & \textbf{Phân công} & \textbf{\% đóng góp}\\
+\hline
+
+\multirow{3}{*}{Vũ Xuân Chính} 
+& \multirow{3}{*}{2210392} 
+& \multirow{3}{*}{\parbox{6cm}{XXXXXX}} 
+& \multirow{3}{*}{100\%}\\
+& & &\\
+& & &\\
+\hline
+
+\multirow{3}{*}{Phạm Quang Minh} 
+& \multirow{3}{*}{2212075} 
+& \multirow{3}{*}{\parbox{6cm}{XXXXXX}} 
+& \multirow{3}{*}{100\%}\\
+& & &\\
+& & &\\
+\hline
+
+\multirow{3}{*}{Tôn Trọng Tín} 
+& \multirow{3}{*}{2033338} 
+& \multirow{3}{*}{\parbox{6cm}{XXXXXX}} 
+& \multirow{3}{*}{100\%}\\
+& & &\\
+& & &\\
+\hline
+
+\multirow{3}{*}{Nguyễn Đoàn Bảo Kha} 
+& \multirow{3}{*}{2311390} 
+& \multirow{3}{*}{\parbox{6cm}{XXXXXX}} 
+& \multirow{3}{*}{100\%}\\
+& & &\\
+& & &\\
+\hline
+
+\multirow{3}{*}{Phùng Xương Cận} 
+& \multirow{3}{*}{2210348} 
+& \multirow{3}{*}{\parbox{6cm}{XXXXXX}} 
+& \multirow{3}{*}{100\%}\\
+& & &\\
+& & &\\
+\hline
+
+\multirow{3}{*}{Lê Anh Tú} 
+& \multirow{3}{*}{1915811} 
+& \multirow{3}{*}{\parbox{6cm}{XXXXXX}} 
+& \multirow{3}{*}{100\%}\\
+& & &\\
+& & &\\
+\hline
+
+\end{tabular}
+\end{center}
+
+% =========================================================
+% Main content
+% =========================================================
+\newpage
+\input{sections/01_tong_quan}
+\input{sections/02_gia_ca_va_canh_tranh}
+\input{sections/03_kien_truc_he_thong}
+\input{sections/04_hien_thuc_va_demo}
+% \input{sections/05_ket_qua_thuc_nghiem_phan_tich.tex}
+% \input{sections/06_trinh_bay_tri_thuc_ung_dung.tex}
+% \input{sections/07_ket_luan_huong_phat_trien.tex}
+\input{sections/05_tai_lieu_tham_khao}
+
+\newpage
+
+\end{document}
