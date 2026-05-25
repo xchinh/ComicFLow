@@ -1,3 +1,57 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: ComicFlow
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/comic_platform}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    drive-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+    servlet:
+      multipart:
+        enabled: true
+        max-file-size: 50MB
+        max-request-size: 200MB
+
+    data:
+      redis:
+        host: localhost
+        port: 6379
+
+jwt:
+  secret: ${SECRET:2b8379f217698cd92f496a6f722c755f7b3b934d40162247d5f59e4c42be69e9}
+  access-token-expiration: 300000
+  refresh-token-expiration: 604800000
+
+springdoc:
+  api-docs:
+    path: /api-docs
+
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+
+minio:
+  url: http://localhost:9000
+  access-key: admin
+  secret-key: password123
+  bucket-name: comic-storage
+
