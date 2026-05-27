@@ -1,5 +1,6 @@
 package com.example.comicflow.auth.dto.request;
 
+import com.example.comicflow.user.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -19,4 +20,6 @@ public class RegisterRequest {
 
     @NotBlank
     String password;
+
+    Role role;
 }

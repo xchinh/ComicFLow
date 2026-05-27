@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserRepository userRepository;
@@ -37,6 +39,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         
         String token = authHeader.substring(7);
+        logger.debug(token);
+
         Claims claims = jwtService.extractClaims(token);
         String email = claims.getSubject();
         User user = userRepository.findByEmail(email).orElse(null);
