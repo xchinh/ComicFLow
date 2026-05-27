@@ -34,8 +34,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MinioException.class)
     public ResponseEntity<ApiResponse<Object>> handleMinioException(MinioException e) {
-        ApiResponse<Object> apiResponse = ApiResponse.error(HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
+        ApiResponse<Object> apiResponse = ApiResponse.error(HttpStatus.BAD_GATEWAY.getReasonPhrase(), e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(apiResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

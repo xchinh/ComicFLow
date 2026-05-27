@@ -78,7 +78,7 @@ public class MinioService implements IMinioService {
 
             String accessType = isFree ? "free" : "paid";
 
-            String fileName = String.format("%s/chapter/%s/%s/%s_%s",
+            String fileName = String.format("%s/chapters/%s/%s/%s_%s",
                     comicId.toString(),
                     chapterId.toString(),
                     accessType,

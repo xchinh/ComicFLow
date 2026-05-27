@@ -29,11 +29,13 @@ public class ChapterService implements IChapterService {
         Comic comic = comicService.findById(request.getComicId());
 
         Chapter chapter = chapterMapper.toChapterResponsePaid(request);
-        String pdfUrl = minioService.uploadChapterPdf(comic.getId(), chapter.getId(), request.getFile(), chapter.isFree());
         chapter.setComic(comic);
-        chapter.setPdfUrl(pdfUrl);
         Chapter savedChapter = chapterRepository.save(chapter);
 
+        String pdfUrl = minioService.uploadChapterPdf(comic.getId(), savedChapter.getId(), request.getFile(), savedChapter.isFree());
+        savedChapter.setPdfUrl(pdfUrl);
+
+        savedChapter =  chapterRepository.save(savedChapter);
         return chapterMapper.toChapterResponse(savedChapter);
     }
 
