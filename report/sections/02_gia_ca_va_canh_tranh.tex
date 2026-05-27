@@ -5,34 +5,578 @@
 \section{Chiến lược Giá cả và Phân tích Cạnh tranh}
 
 \subsection{Chiến lược định giá}
-% Kết quả khảo sát dữ liệu khách hàng về mức giá sẵn lòng chi trả, các mức giá đề xuất, chiến lược giá (penetration, skimming, value-based...).
+
+Các phân tích ở Chương~\ref{chap:phan1_phan2} cho thấy bài toán thương mại của nền tảng không nằm ở việc thuyết phục người dùng ``trả tiền cho truyện tranh'' theo nghĩa chung chung. Bài toán thực tế cụ thể hơn: người đọc đã quen với nội dung miễn phí, nhưng đồng thời đang chịu trải nghiệm kém, thiếu kho nội dung hợp pháp đủ hấp dẫn và không có cơ chế chi trả linh hoạt cho tác phẩm họ thật sự muốn đọc. Vì vậy, chiến lược định giá cần giải quyết đồng thời ba mục tiêu: giảm rào cản chi tiêu lần đầu, làm rõ giá trị nhận được trước khi yêu cầu thanh toán, và bảo đảm tác giả vẫn có động lực kinh tế để xuất bản trên nền tảng.
+
+\subsubsection{Cơ sở định giá từ khảo sát}
+
+Khảo sát 54 phản hồi hợp lệ cung cấp ba tín hiệu quan trọng cho quyết định giá. Thứ nhất, \textbf{70{,}3\%} người được hỏi có ý định chi trả trong điều kiện phù hợp, gồm 25{,}9\% ``chắc chắn có'' và 44{,}4\% ``có thể nếu giá hợp lý''. Thứ hai, \textbf{74{,}1\%} chấp nhận mức 1.000--5.000~VNĐ/chương nếu trải nghiệm đủ tốt, cụ thể là bản dịch chuẩn, hình ảnh sắc nét và không quảng cáo. Thứ ba, \textbf{44{,}4\%} chọn mức 20.000--50.000~VNĐ/tháng cho gói Premium, trong khi chỉ 11{,}1\% không sẵn sàng đăng ký bất kỳ gói tháng nào.
+
+Các con số này không nên được hiểu như một bảo đảm chắc chắn về doanh thu, vì khảo sát có cỡ mẫu nhỏ và tồn tại thiên lệch giữa ý định tự báo cáo với hành vi thật. Tuy nhiên, chúng đủ mạnh để định hướng cấu trúc giá ban đầu: mức giá phải thấp hơn ngưỡng tâm lý của Gen Z, nhưng không được thấp đến mức phá vỡ mô hình chia sẻ doanh thu 70/30 với tác giả. Nói cách khác, chiến lược giá cần được thiết kế như một cơ chế chuyển đổi hành vi, không chỉ là bảng giá.
+
+Một hàm ý đặc biệt quan trọng là khoảng cách giữa ý định chi trả và hành vi đọc lậu. Dù \textbf{90{,}7\%} người dùng từng hoặc đang đọc truyện lậu, nguyên nhân không chỉ là ``miễn phí'': 64{,}8\% chọn vì cập nhật nhanh hơn và 63\% chọn vì truyện muốn đọc không có trên web bản quyền. Do đó, nếu chỉ giảm giá mà không cải thiện kho nội dung, tốc độ cập nhật và trải nghiệm đọc, nền tảng vẫn khó chuyển đổi người dùng.
+
+\subsubsection{Cấu trúc giá đề xuất}
+
+Nền tảng áp dụng cấu trúc giá ba tầng như Bảng~\ref{tab:pricing-tier}. Ba tầng này không cạnh tranh lẫn nhau mà phục vụ ba thời điểm khác nhau trong hành trình người dùng: đọc thử, cam kết với một tác phẩm, và gắn bó thường xuyên với hệ sinh thái.
+
+\begin{table}[H]
+\centering
+\caption{Cấu trúc giá đề xuất của nền tảng}
+\label{tab:pricing-tier}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{|L{2.8cm}|L{3.2cm}|L{3.6cm}|L{4.4cm}|}
+\hline
+\textbf{Tầng giá} & \textbf{Mức giá} & \textbf{Vai trò trong phễu} & \textbf{Cơ sở và kiểm soát rủi ro} \\
+\hline
+Mua lẻ theo chương bằng Coin
+& 1.000--5.000~VNĐ/\allowbreak chương; mức mặc định 2.000~VNĐ
+& Chuyển đổi người đọc thử thành người trả phí lần đầu
+& Bám sát biên độ 74{,}1\% chấp nhận; hiển thị rõ chương miễn phí/chương trả phí từ danh sách chương để tránh cảm giác paywall đột ngột \\
+\hline
+Mua trọn bộ hoặc combo arc
+& Giảm 20--30\% so với tổng giá lẻ
+& Tăng giá trị giao dịch trung bình với độc giả đã thích tác phẩm
+& Phù hợp các bộ đã hoàn thành hoặc các arc dài; không áp dụng quá sớm để tránh làm giảm doanh thu của chương mới \\
+\hline
+Gói Premium tháng
+& 49.000~VNĐ/\allowbreak tháng; tháng đầu khuyến mại 24.500~VNĐ
+& Tạo doanh thu định kỳ từ người đọc thường xuyên
+& Nằm ngay dưới ngưỡng 50.000~VNĐ; đặc quyền phải đủ rõ, đặc biệt là đọc sớm, không quảng cáo và hạn mức chương miễn phí hằng tháng \\
+\hline
+\end{tabular}
+\end{table}
+
+Gói Premium được thiết kế quanh bốn đặc quyền chính. Đặc quyền thứ nhất là đọc trước chương mới sớm hơn 3--7 ngày, phù hợp với \textbf{75{,}9\%} người dùng đánh giá tích cực quyền lợi đọc sớm. Đặc quyền thứ hai là tắt toàn bộ quảng cáo, trực tiếp giải quyết pain point quảng cáo phản cảm mà \textbf{90{,}7\%} người dùng đã phản ánh. Đặc quyền thứ ba là 10 chương miễn phí mỗi tháng không cần dùng Coin, giúp gói tháng có giá trị hữu hình ngay cả khi người dùng chưa theo dõi nhiều bộ truyện. Đặc quyền thứ tư là huy hiệu Premium trong cộng đồng, đóng vai trò tín hiệu xã hội nhưng không được đặt làm lợi ích chính vì giá trị chi trả vẫn phải đến từ nội dung.
+
+Để xử lý vấn đề 59{,}3\% người dùng từng bỏ truyện do phải trả tiền đột ngột, nền tảng cần áp dụng nguyên tắc \textit{paywall minh bạch}: mỗi bộ truyện phải hiển thị rõ số chương miễn phí, số chương cần Coin, lịch mở miễn phí nếu có, và giá trước khi người dùng bắt đầu đọc. Cách làm này không làm mất doanh thu; ngược lại, nó giảm cảm giác bị đánh lừa và giúp người dùng chủ động quyết định chi trả.
+
+\subsubsection{Lựa chọn chiến lược định giá}
+
+Nền tảng không phù hợp với chiến lược skimming vì thương hiệu chưa đủ mạnh, kho nội dung ban đầu còn nhỏ và người dùng mục tiêu có độ nhạy giá cao. Ngược lại, penetration pricing thuần tuý cũng nguy hiểm vì giá quá thấp sẽ làm yếu vị thế của nội dung bản quyền, đồng thời không đủ biên để chia sẻ doanh thu cho tác giả và chi trả hạ tầng ảnh.
+
+Chiến lược phù hợp là \textbf{value-based pricing có kiểm soát thâm nhập}. Giá được neo theo giá trị cảm nhận mà khảo sát đã xác nhận: ảnh tải nhanh, ít quảng cáo, nội dung rõ bản quyền, bình luận theo chương và khả năng ủng hộ tác giả. Yếu tố thâm nhập chỉ áp dụng trong giai đoạn đầu thông qua ba cơ chế: tặng gói Coin chào mừng tương đương khoảng 10 chương mặc định, miễn phí 10 chương đầu của mỗi bộ để giảm rào cản thử, và giảm 50\% tháng Premium đầu trong ba tháng ra mắt.
+
+\subsubsection{Chính sách thanh toán}
+
+Phương thức thanh toán cần bám sát hành vi nội địa. Ví điện tử MoMo/ZaloPay được ưu tiên triển khai đầu tiên vì chiếm \textbf{59{,}3\%} lựa chọn trong khảo sát; VietQR đứng thứ hai với \textbf{27{,}8\%}; thẻ cào điện thoại và App Store/Google Play được xem là kênh bổ sung. Thứ tự này phù hợp với bản chất micro-transaction: giao dịch nhỏ cần ít bước, xác nhận nhanh và không buộc người dùng nhập thông tin thẻ ngân hàng.
+
+Về thiết kế sản phẩm, Coin nên được dùng như ví nội bộ để gom các giao dịch nhỏ, giảm phí cổng thanh toán trên từng chương và tạo cảm giác chi tiêu linh hoạt. Tuy nhiên, giá quy đổi Coin phải minh bạch, không nên dùng tỷ lệ mơ hồ khiến người dùng khó hiểu số tiền thật đang chi trả.
 
 \subsection{Phân tích cạnh tranh}
-\subsubsection{Ma trận cạnh tranh (Competitive Matrix)}
-% Bảng so sánh chi tiết với ít nhất 3-4 đối thủ trực tiếp.
 
-\subsubsection{Phân tích đối thủ và lợi thế cạnh tranh}
-% Điểm mạnh/yếu của đối thủ, lợi thế cạnh tranh bền vững của dự án.
+\subsubsection{Ma trận cạnh tranh}
+
+Thị trường truyện tranh số tại Việt Nam không chỉ có các nền tảng bản quyền. Đối thủ thực tế còn bao gồm những website lậu và nền tảng cộng đồng quốc tế, vì đây là nơi người dùng đang dành thời gian đọc. Bảng~\ref{tab:competitive-matrix} so sánh các nhóm đối thủ theo những tiêu chí gắn trực tiếp với pain points đã khảo sát.
+
+\begin{table}[H]
+\centering
+\caption{Ma trận cạnh tranh nền tảng truyện tranh số}
+\label{tab:competitive-matrix}
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabularx}{\textwidth}{|L{2.7cm}|Y|Y|Y|Y|Y|}
+\hline
+\textbf{Tiêu chí} & \textbf{Nền tảng đề xuất} & \textbf{Webtoon} & \textbf{Comicola} & \textbf{MangaDex} & \textbf{Trang lậu} \\
+\hline
+Mức sử dụng trong khảo sát & Chưa ra mắt & 46{,}3\% & 44{,}4\% & 40{,}7\% & 66{,}7\% \\
+\hline
+Bản quyền hợp pháp & \cellcolor{green!25}Có & \cellcolor{green!25}Có & \cellcolor{green!25}Có & \cellcolor{yellow!30}Một phần & \cellcolor{red!25}Không \\
+\hline
+Nội địa hoá Việt Nam & \cellcolor{green!25}Cao & \cellcolor{yellow!30}Thấp & \cellcolor{green!25}Cao & \cellcolor{yellow!30}Trung bình & \cellcolor{green!25}Cao \\
+\hline
+Trải nghiệm đọc & \cellcolor{green!25}Tập trung tối ưu & \cellcolor{green!25}Mạnh & \cellcolor{yellow!30}Trung bình & \cellcolor{green!25}Mạnh & \cellcolor{red!25}Kém \\
+\hline
+Mô hình chi trả nhỏ & \cellcolor{green!25}Coin theo chương & \cellcolor{yellow!30}Fast Pass & \cellcolor{red!25}Hạn chế & \cellcolor{red!25}Không & Không áp dụng \\
+\hline
+Công cụ cho tác giả & \cellcolor{green!25}Dashboard, DRM, doanh thu & \cellcolor{red!25}Không phù hợp tác giả Việt & \cellcolor{yellow!30}Hạn chế & \cellcolor{red!25}Không & Không có \\
+\hline
+Cộng đồng bản địa & \cellcolor{green!25}Bình luận, hồ sơ tác giả & \cellcolor{yellow!30}Phân tán & \cellcolor{red!25}Yếu & \cellcolor{yellow!30}Quốc tế & \cellcolor{red!25}Thấp \\
+\hline
+Kho nội dung ban đầu & \cellcolor{yellow!30}Nhỏ, cần xây dựng & \cellcolor{green!25}Lớn & \cellcolor{yellow!30}Vừa & \cellcolor{green!25}Rất lớn & \cellcolor{green!25}Rất lớn \\
+\hline
+\end{tabularx}
+\end{table}
+
+Ma trận này cho thấy khoảng trống chiến lược không nằm ở một tính năng đơn lẻ. Webtoon mạnh về UX và nội dung quốc tế nhưng chưa giải quyết bài toán tác giả Việt. Comicola có lợi thế nội địa và bản quyền nhưng chưa tạo được cộng đồng tương tác đủ mạnh. MangaDex có trải nghiệm sạch và kho nội dung lớn nhưng không có mô hình kinh tế cho tác giả. Trang lậu thắng ở miễn phí, tốc độ và kho nội dung nhưng thất bại ở trải nghiệm, pháp lý và quan hệ với tác giả. Vì vậy, định vị hợp lý của nền tảng là \textbf{nền tảng truyện tranh bản quyền, nội địa hoá sâu, lấy tác giả và cộng đồng làm trung tâm}.
+
+\subsubsection{Phân tích đối thủ}
+
+\textbf{Webtoon.} Đây là đối thủ mạnh nhất về chuẩn trải nghiệm đọc. Điểm khó cạnh tranh trực diện là kho nội dung quốc tế và khả năng tối ưu sản phẩm đã được kiểm chứng. Tuy nhiên, Webtoon chưa phải một không gian bản địa cho tác giả Việt: nội dung tiếng Việt gốc ít, cơ chế hỗ trợ tác giả Việt hạn chế và cộng đồng người đọc Việt không hình thành thành một lớp quan hệ riêng. Nền tảng đề xuất cần tránh đối đầu bằng quy mô nội dung, mà tập trung vào các lợi thế khó sao chép nhanh: quan hệ trực tiếp với tác giả Việt, thanh toán nội địa, bình luận tiếng Việt và các hoạt động cộng đồng.
+
+\textbf{Comicola.} Đây là đối thủ gần nhất về định vị bản quyền nội địa. Lợi thế của Comicola là đã có nhận diện nhất định và một lượng nội dung Việt. Điểm có thể tấn công là trải nghiệm đọc chưa thật sự giải quyết triệt để các pain point Gen Z: tốc độ tải, lưu tiến trình, bình luận theo chương và tính cộng đồng. Với \textbf{83{,}3\%} người dùng ưu tiên tải ảnh nhanh, \textbf{61{,}1\%} cần lưu tiến trình và \textbf{40{,}7\%} muốn bình luận theo chương, nền tảng có thể tạo khác biệt bằng chất lượng vận hành sản phẩm thay vì chỉ bằng thông điệp bản quyền.
+
+\textbf{MangaDex.} MangaDex không phải đối thủ doanh thu trực tiếp, nhưng là đối thủ về thói quen. Người dùng đã quen với trải nghiệm sạch, không quảng cáo và kho nội dung cực rộng. Điều này đặt ra tiêu chuẩn tối thiểu cho nền tảng: không thể lấy lý do ``có bản quyền'' để chấp nhận UX kém. Muốn chuyển đổi nhóm này, nền tảng phải cung cấp giá trị MangaDex không có: bản dịch ổn định, tác giả được trả tiền, quyền lợi đọc sớm chính thức và cộng đồng Việt có quan hệ thật với người sáng tác.
+
+\textbf{Trang lậu.} Đây là đối thủ thực tế nguy hiểm nhất vì đang chiếm phần lớn hành vi đọc. Nền tảng không nên cố thắng trang lậu ở giá bằng không hoặc tốc độ re-upload. Chiến lược đúng là cạnh tranh trên những chiều trang lậu không thể cung cấp bền vững: trải nghiệm đọc an toàn, không quảng cáo phản cảm, lưu tiến trình, hệ thống bình luận có kiểm duyệt, tương tác với tác giả và cảm giác ủng hộ trực tiếp người sáng tác. Dữ liệu khảo sát ủng hộ hướng đi này: \textbf{57{,}4\%} có nhu cầu tương tác với tác giả và \textbf{77{,}7\%} có quan tâm đến cộng đồng ở mức độ nào đó.
+
+\subsubsection{Lợi thế cạnh tranh bền vững}
+
+Lợi thế cạnh tranh của nền tảng cần được xây trên ba lớp. Lớp thứ nhất là \textbf{hiệu ứng mạng hai chiều}: càng nhiều tác giả chất lượng thì càng thu hút độc giả; càng nhiều độc giả trả phí thì càng tăng động lực để tác giả xuất bản độc quyền hoặc ưu tiên cập nhật trên nền tảng. Lớp thứ hai là \textbf{dữ liệu hành vi độc giả Việt Nam}: dữ liệu đọc, bỏ đọc, mua chương và tương tác bình luận giúp cải thiện đề xuất nội dung, hỗ trợ tác giả và tối ưu chiến dịch marketing. Lớp thứ ba là \textbf{chi phí chuyển đổi của tác giả}: khi tác giả đã có lịch sử doanh thu, dashboard, cộng đồng người theo dõi và quan hệ độc giả trên nền tảng, việc chuyển sang kênh khác sẽ tạo chi phí cơ hội rõ rệt.
+
+Điều kiện để ba lớp lợi thế này xuất hiện là nền tảng phải vượt qua điểm yếu ban đầu về kho nội dung. Vì vậy, cạnh tranh trong 12 tháng đầu không chỉ là marketing tới độc giả, mà còn là chiến lược thu hút tác giả và studio nhỏ để bảo đảm nguồn cung nội dung đủ đều.
 
 % ==================== PHẦN 3B ====================
 \section{Tiếp thị và Quảng cáo}
 
-\subsection{Chiến lược Marketing tổng thể}
-\subsection{Kế hoạch Omnichannel Marketing}
-% Chi tiết các kênh: Social Media, SEO, Google Ads, TikTok, Email, Offline...
+\subsection{Chiến lược marketing tổng thể}
 
-\subsection{Chiến lược sáng tạo nội dung và Campaign}
-\subsection{Mục tiêu marketing, động lực chọn kênh và lý do}
-\subsection{KPI đo lường hiệu quả (SMART KPIs)}
+Marketing của nền tảng được xây dựng theo logic phễu chuyển đổi, nhưng không bắt đầu bằng thông điệp bán hàng. Với sản phẩm nội dung số, người dùng chỉ trả tiền sau khi đã cảm thấy tác phẩm đủ hấp dẫn và nền tảng đủ đáng tin. Vì vậy, chiến lược marketing cần đi theo chuỗi: tạo nhận biết bằng nội dung hấp dẫn, chứng minh trải nghiệm tốt hơn trang lậu, sau đó mới chuyển đổi sang mua chương hoặc Premium.
+
+Định vị truyền thông cốt lõi là: \textit{``Đọc truyện chất lượng cao, ủng hộ trực tiếp tác giả Việt, và tham gia vào cộng đồng cùng đam mê.''} Thông điệp này cố tình đặt ba giá trị ngang hàng: chất lượng đọc cho độc giả, doanh thu minh bạch cho tác giả, và cộng đồng bản địa. Nếu chỉ nói về bản quyền, thông điệp dễ trở thành lời kêu gọi đạo đức; nếu chỉ nói về UX, nền tảng khó khác biệt với các sản phẩm quốc tế. Sự kết hợp cả ba mới tạo được vị thế riêng.
+
+\subsection{Kế hoạch omnichannel marketing}
+
+Nguồn lực marketing giai đoạn MVP cần tập trung vào các kênh có khả năng tạo cộng đồng và chuyển đổi đo lường được. Bảng~\ref{tab:omnichannel-plan} trình bày kế hoạch phân bổ ngân sách 6 tháng đầu.
+
+\begin{table}[H]
+\centering
+\caption{Kế hoạch omnichannel marketing giai đoạn MVP}
+\label{tab:omnichannel-plan}
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{tabular}{|L{2.4cm}|L{2.8cm}|L{4.0cm}|L{4.2cm}|}
+\hline
+\textbf{Kênh} & \textbf{Vai trò} & \textbf{Hoạt động chính} & \textbf{Tỷ trọng và lý do} \\
+\hline
+Facebook Pages/Groups
+& Awareness + Community
+& Đăng preview chương mới, mở thảo luận theo bộ truyện, tuyển beta reader trong group đọc truyện
+& 25\%; phù hợp vì 35{,}7\% người khảo sát đã từng đọc hoặc tìm truyện qua Facebook/Fanpage \\
+\hline
+TikTok
+& Awareness viral
+& Video review 30--60 giây, edit khoảnh khắc cao trào, hậu trường tác giả, thử thách bình chọn nhân vật
+& 25\%; hợp với hành vi tiêu thụ nội dung ngắn của Gen Z và có chi phí thử nghiệm thấp \\
+\hline
+KOLs/\allowbreak Reviewer truyện tranh
+& Trust + Conversion
+& Review tác phẩm ra mắt, livestream đọc thử, affiliate link cho Premium và Coin
+& 20\%; dùng hoa hồng 15--20\% để gắn chi phí với chuyển đổi thật \\
+\hline
+SEO và content hub
+& Long-term acquisition
+& Tối ưu từ khoá ``đọc [tên truyện] online'', bài phân tích thể loại, trang hồ sơ tác giả
+& 12\%; tạo nguồn traffic bền vững và cạnh tranh lại kết quả tìm kiếm của trang lậu \\
+\hline
+Google Ads/Search Ads
+& Capture intent
+& Chạy quảng cáo theo tên truyện, thể loại và từ khoá có ý định đọc ngay
+& 8\%; chỉ dùng cho từ khoá có khả năng chuyển đổi cao để kiểm soát CAC \\
+\hline
+Email/Push notification
+& Retention
+& Thông báo chương mới, gợi ý cá nhân hoá, chiến dịch winback người đọc bỏ dở
+& 6\%; chi phí thấp, tác động trực tiếp đến quay lại đọc và mua chương \\
+\hline
+Offline/\allowbreak community event
+& Brand building
+& Workshop tác giả, booth tại hội sách hoặc sự kiện truyện tranh, gặp gỡ creator
+& 4\%; không ưu tiên quy mô lớn nhưng cần để xây dựng niềm tin với tác giả \\
+\hline
+\end{tabular}
+\end{table}
+
+Điểm khác biệt của kế hoạch này là không xem các kênh như các silo riêng. Một video TikTok tốt cần kéo người xem về trang đọc thử; một bài SEO tốt cần gắn với nút theo dõi tác phẩm; một buổi livestream KOL cần có mã giới thiệu đo được; và nhóm Facebook cần trở thành nơi duy trì thảo luận sau khi người dùng đã đọc.
+
+\subsection{Chiến lược nội dung và campaign}
+
+\subsubsection{Triết lý nội dung}
+
+Vì sản phẩm cốt lõi là truyện tranh, marketing hiệu quả nhất là để nội dung tự chứng minh sức hút. Mỗi bài đăng nên thuộc một trong bốn nhóm: giới thiệu tác phẩm, làm nổi bật tác giả, kích hoạt thảo luận cộng đồng, hoặc giải thích giá trị đọc bản quyền bằng câu chuyện cụ thể. Tránh biến truyền thông thành các bài kêu gọi chung chung như ``hãy ủng hộ bản quyền'', vì thông điệp này đúng nhưng chưa đủ để tạo hành vi chi trả.
+
+\subsubsection{Campaign theo giai đoạn}
+
+\textbf{Pre-launch (Tháng 1--2):} Campaign \textit{``100 Founding Readers''} tuyển 100 độc giả beta đầu tiên. Nhóm này được đọc thử, nhận Premium 1 năm, huy hiệu Founding Reader và quyền bình chọn các bộ truyện ưu tiên mua bản quyền/onboard. Mục tiêu không chỉ là lấy người dùng đầu tiên mà là kiểm chứng willingness-to-pay, phản hồi UX và danh sách nội dung có nhu cầu thật.
+
+\textbf{Launch (Tháng 3):} Campaign \textit{``Đọc sạch, tác giả nhận thật''} truyền thông vào hai lợi ích rõ nhất: không quảng cáo phản cảm và doanh thu được chia minh bạch cho tác giả. Nội dung nên đi kèm các câu chuyện cụ thể của tác giả, ví dụ số giờ thực hiện một chương, chi phí sản xuất và cách mỗi lượt mua giúp tác phẩm tiếp tục ra chương mới.
+
+\textbf{Growth (Tháng 4--6):} Campaign \textit{``Theo dấu một bộ truyện''} theo dõi hành trình từ phác thảo, storyboard, lên màu đến xuất bản chương mới. Campaign này giúp nền tảng khác trang lậu ở chiều sâu quan hệ với tác giả: người đọc không chỉ tiêu thụ nội dung mà còn thấy quá trình sáng tác phía sau.
+
+\textbf{Retention (Tháng 7+):} Duy trì các hoạt động định kỳ như bình chọn truyện hay tháng, thử thách fan art, AMA với tác giả và bảng xếp hạng cộng đồng. Mục tiêu là biến người đọc trả phí thành người theo dõi lâu dài, giảm churn Premium và tăng số chương đọc mỗi tháng.
+
+\subsubsection{Lộ trình triển khai marketing 6 tháng đầu (Action Plan)}
+
+Để chiến lược không dừng ở mức định hướng, các hoạt động marketing được lập lịch chi tiết theo từng tháng dưới dạng Gantt như Bảng~\ref{tab:marketing-gantt}. Ngân sách phân bổ theo tháng đảm bảo tổng chi 6 tháng đầu khoảng \textbf{240 triệu VNĐ}, tương ứng với 40 triệu/tháng theo dự toán OPEX marketing đã trình bày ở Bảng~\ref{tab:capex-opex}.
+
+\begin{table}[H]
+\centering
+\caption{Gantt chart triển khai marketing 6 tháng đầu}
+\label{tab:marketing-gantt}
+\renewcommand{\arraystretch}{1.2}
+\scriptsize
+\begin{tabular}{|L{4.5cm}|c|c|c|c|c|c|}
+\hline
+\textbf{Hoạt động} & \textbf{M1} & \textbf{M2} & \textbf{M3} & \textbf{M4} & \textbf{M5} & \textbf{M6} \\
+\hline
+\multicolumn{7}{|l|}{\cellcolor{gray!20}\textbf{Pre-launch (M1--M2): Xây nền tảng và cộng đồng hạt giống}} \\
+\hline
+Hoàn thiện brand kit, landing page, social asset & \cellcolor{blue!40} & & & & & \\
+\hline
+Lập Facebook Page, group cộng đồng, kênh TikTok & \cellcolor{blue!40} & \cellcolor{blue!40} & & & & \\
+\hline
+Tuyển và onboard 100 Founding Readers (beta) & \cellcolor{blue!40} & \cellcolor{blue!40} & & & & \\
+\hline
+Sản xuất 15--20 bài SEO content nền tảng & \cellcolor{blue!40} & \cellcolor{blue!40} & \cellcolor{blue!40} & & & \\
+\hline
+Brief và ký hợp đồng 5--8 KOLs/Reviewer & & \cellcolor{blue!40} & \cellcolor{blue!40} & & & \\
+\hline
+\multicolumn{7}{|l|}{\cellcolor{gray!20}\textbf{Launch (M3): Ra mắt và kích hoạt nhận biết rộng}} \\
+\hline
+Campaign \textit{``Đọc sạch, tác giả nhận thật''} & & & \cellcolor{green!50} & \cellcolor{green!50} & & \\
+\hline
+Phát sóng đồng loạt review KOLs (5--8 video) & & & \cellcolor{green!50} & \cellcolor{green!50} & & \\
+\hline
+Chạy paid ads Facebook + Google Search & & & \cellcolor{green!50} & \cellcolor{green!50} & \cellcolor{green!50} & \cellcolor{green!50} \\
+\hline
+Series TikTok video ngắn (3--5 video/tuần) & & \cellcolor{green!50} & \cellcolor{green!50} & \cellcolor{green!50} & \cellcolor{green!50} & \cellcolor{green!50} \\
+\hline
+Triển khai email/push onboarding tự động & & & \cellcolor{green!50} & \cellcolor{green!50} & \cellcolor{green!50} & \cellcolor{green!50} \\
+\hline
+\multicolumn{7}{|l|}{\cellcolor{gray!20}\textbf{Post-launch (M4--M6): Tăng trưởng và giữ chân}} \\
+\hline
+Campaign \textit{``Theo dấu một bộ truyện''} & & & & \cellcolor{orange!50} & \cellcolor{orange!50} & \cellcolor{orange!50} \\
+\hline
+KOL affiliate đợt 2 (10--15 KOLs) & & & & \cellcolor{orange!50} & \cellcolor{orange!50} & \cellcolor{orange!50} \\
+\hline
+A/B test paid ads, tối ưu CAC theo cohort & & & & \cellcolor{orange!50} & \cellcolor{orange!50} & \cellcolor{orange!50} \\
+\hline
+Workshop/AMA với tác giả (online + offline) & & & & & \cellcolor{orange!50} & \cellcolor{orange!50} \\
+\hline
+Chiến dịch winback user bỏ dở (email + push) & & & & & \cellcolor{orange!50} & \cellcolor{orange!50} \\
+\hline
+\multicolumn{7}{|l|}{\cellcolor{gray!20}\textbf{Phân bổ ngân sách (triệu VNĐ/tháng)}} \\
+\hline
+\textbf{Tổng chi marketing} & 25 & 30 & 55 & 50 & 40 & 40 \\
+\hline
+\end{tabular}
+\end{table}
+
+Logic phân bổ ngân sách theo hình \textit{``J-curve''}: chi thấp ở M1--M2 (chỉ chuẩn bị hạ tầng, chưa cần đẩy traffic), đẩy mạnh ở M3 (đỉnh launch campaign + paid ads đồng loạt), sau đó giảm dần về mức ổn định 40 triệu/tháng khi các kênh organic (SEO, KOL affiliate, referral) bắt đầu đóng góp. Mốc M3 vượt ngân sách trung bình 40 triệu là có chủ ý: launch window là thời điểm có ROI marketing cao nhất do hiệu ứng tâm lý ``ra mắt'' và sự chú ý tự nhiên từ giới reviewer.
+
+Ba điểm kiểm tra (\textit{checkpoint}) bắt buộc trước khi chuyển giai đoạn: cuối M2 phải có đủ 100 Founding Readers và 5+ KOLs đã ký hợp đồng; cuối M3 phải đo được CAC và tỷ lệ chuyển đổi từ campaign launch; cuối M6 phải có dữ liệu cohort 3 tháng đầu để quyết định cấu trúc ngân sách quý tiếp theo. Nếu một trong ba checkpoint không đạt, kế hoạch các tháng sau cần được điều chỉnh thay vì chạy theo lịch ban đầu.
+
+\subsection{Mục tiêu marketing và KPI}
+
+\subsubsection{Mục tiêu theo giai đoạn}
+
+\begin{itemize}
+    \item \textbf{Giai đoạn MVP (0--6 tháng):} đạt 10.000 người dùng đăng ký, 1.000 người dùng có ít nhất một hành vi trả phí, và hoàn thiện cohort dữ liệu đầu tiên về activation, retention và willingness-to-pay.
+    \item \textbf{Giai đoạn Growth (6--18 tháng):} đạt 50.000 MAU, tỷ lệ chuyển đổi trả phí 10\%, ARPPU 60.000~VNĐ/tháng và ít nhất 150 tác phẩm đang hoạt động.
+    \item \textbf{Giai đoạn Scale (18+ tháng):} đạt 200.000 MAU, mở rộng kho nội dung lên 500+ tác phẩm, xây dựng đội kiểm duyệt/chăm sóc khách hàng đủ đáp ứng lưu lượng lớn.
+\end{itemize}
+
+\subsubsection{Hệ thống KPI}
+
+\begin{table}[H]
+\centering
+\caption{KPI marketing theo phễu chuyển đổi}
+\label{tab:kpis}
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{tabular}{|L{2.5cm}|L{3.8cm}|L{3.5cm}|L{3.5cm}|}
+\hline
+\textbf{Cấp độ} & \textbf{KPI} & \textbf{Mục tiêu MVP} & \textbf{Cách đo} \\
+\hline
+Awareness
+& Reach hàng tháng
+& 500.000 impressions/tháng
+& Facebook Insights, TikTok Analytics, Google Ads \\
+\hline
+Acquisition
+& CAC đăng ký
+& $\leq$ 25.000~VNĐ/user
+& Chi marketing / user đăng ký mới \\
+\hline
+Activation
+& Tỷ lệ đọc chương đầu trong 24h
+& $\geq$ 70\%
+& Event tracking nội bộ \\
+\hline
+Engagement
+& Số chương đọc trung bình tuần đầu
+& $\geq$ 10 chương/user
+& Reader analytics \\
+\hline
+Revenue
+& Tỷ lệ user trả phí
+& 10\%
+& Giao dịch Coin + Premium / MAU \\
+\hline
+Revenue
+& ARPPU
+& 60.000~VNĐ/tháng
+& Doanh thu gross / số user trả phí \\
+\hline
+Retention
+& M1 retention
+& $\geq$ 40\%
+& Cohort retention \\
+\hline
+Retention
+& Churn Premium
+& $\leq$ 10\%/tháng
+& Subscription tracking \\
+\hline
+Unit economics
+& LTV/CAC
+& $\geq$ 3:1
+& Cohort doanh thu và chi phí marketing \\
+\hline
+\end{tabular}
+\end{table}
+
+Hai KPI cần được xem là tín hiệu cảnh báo sớm là CAC và M1 retention. Nếu CAC thấp nhưng retention yếu, marketing đang kéo sai tệp người dùng hoặc sản phẩm chưa đủ hấp dẫn. Nếu retention tốt nhưng CAC quá cao, cần dịch chuyển ngân sách từ ads sang SEO, KOL affiliate và referral để cải thiện unit economics.
 
 % ==================== PHẦN 3C ====================
 \section{Dự toán Kinh phí, Tài chính và Nhân sự}
 
 \subsection{Dự toán tài chính}
-% Bảng chi phí ban đầu, dự báo doanh thu, chi phí vận hành, cash flow, điểm hòa vốn.
+
+\subsubsection{CAPEX và OPEX năm đầu}
+
+Dự toán tài chính được tách thành CAPEX và OPEX để phản ánh đúng bản chất dòng tiền. CAPEX là khoản đầu tư một lần trước khi vận hành ổn định; OPEX là chi phí lặp lại cần được tài trợ trong giai đoạn doanh thu chưa đủ bù chi phí.
+
+\begin{table}[H]
+\centering
+\caption{Dự toán CAPEX và OPEX 12 tháng đầu (đơn vị: triệu VNĐ)}
+\label{tab:capex-opex}
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{tabular}{|L{4.6cm}|r|L{6.0cm}|}
+\hline
+\textbf{Hạng mục} & \textbf{Chi phí} & \textbf{Ghi chú} \\
+\hline
+\multicolumn{3}{|l|}{\cellcolor{blue!10}\textbf{I. CAPEX -- Đầu tư ban đầu}} \\
+\hline
+Thiết kế UX/UI và branding & 60 & Thiết kế trải nghiệm đọc, hệ thống nhận diện và flow thanh toán \\
+\hline
+Phát triển MVP & 240 & 4 nhân sự kỹ thuật trong 3--4 tháng; ưu tiên reader, auth, payment, quản lý truyện \\
+\hline
+Thiết lập hạ tầng ban đầu & 30 & Server, MinIO/S3-compatible storage, Redis, monitoring cơ bản \\
+\hline
+Mua/onboard nội dung khởi điểm & 150 & 30--50 tác phẩm hoặc chương/bộ trọng điểm để tạo anchor content \\
+\hline
+Pháp lý và sở hữu trí tuệ & 20 & Đăng ký doanh nghiệp, thương hiệu, mẫu hợp đồng tác giả \\
+\hline
+\textbf{Tổng CAPEX} & \textbf{500} & \\
+\hline
+\multicolumn{3}{|l|}{\cellcolor{blue!10}\textbf{II. OPEX -- Vận hành năm đầu}} \\
+\hline
+Nhân sự & 1.440 & Bình quân 8 FTE trong năm đầu; cuối giai đoạn MVP mở rộng lên 12 vai trò \\
+\hline
+Hạ tầng cloud và băng thông & 360 & 20--40 triệu/tháng, tăng theo lượt đọc ảnh và lưu lượng chương mới \\
+\hline
+Marketing và KOLs & 480 & 40 triệu/tháng, ưu tiên affiliate và content performance \\
+\hline
+Mua thêm/onboard nội dung & 240 & 20 triệu/tháng để duy trì tốc độ bổ sung kho truyện \\
+\hline
+Phí cổng thanh toán & 60 & 2--3\% giao dịch, cộng chi phí xử lý hoàn tiền/hỗ trợ \\
+\hline
+Chi phí vận hành khác & 120 & Công cụ làm việc, kế toán, pháp lý phát sinh, hỗ trợ khách hàng \\
+\hline
+\textbf{Tổng OPEX 12 tháng} & \textbf{2.700} & \\
+\hline
+\multicolumn{2}{|l|}{\cellcolor{yellow!20}\textbf{Tổng vốn cần chuẩn bị năm 1}} & \cellcolor{yellow!20}\textbf{3.200 triệu VNĐ} \\
+\hline
+\end{tabular}
+\end{table}
+
+\textit{Ghi chú về chi phí nhân sự năm đầu:} Tổng quỹ lương 1.440~triệu cho bình quân 8~FTE tương đương khoảng 15~triệu/người/tháng -- mức thấp hơn đáng kể so với mặt bằng thị trường cho các vị trí CTO, Product Lead hay Senior Backend. Con số này phản ánh giả định khả thi của giai đoạn khởi nghiệp: \textbf{đội ngũ Founder (CEO, CTO, Product Lead) nhận lương tượng trưng theo cơ chế Sweat Equity}, phần đối ứng còn lại được quy đổi bằng cổ phần (vesting 4 năm, cliff 1 năm). Khoản 1.440~triệu vì vậy chủ yếu chi cho nhóm thực thi (developers, designer, content creator, moderator, creator operations) ở mức gần mặt bằng thị trường, đồng thời để lại biên dự phòng cho thuế, BHXH và phúc lợi cơ bản. Nếu không áp dụng Sweat Equity, ngân sách nhân sự năm đầu thực tế sẽ cần ở mức 2.000--2.300~triệu, tương ứng tổng vốn năm 1 phải nâng lên khoảng 3.800--4.100~triệu.
+
+\subsubsection{Dự báo doanh thu 3 năm}
+
+Dự báo doanh thu trong Bảng~\ref{tab:revenue-forecast} sử dụng doanh thu thuần thuộc về nền tảng sau khi chia sẻ 70\% cho tác giả đối với Premium phân bổ theo nội dung và giao dịch mua chương. Các giả định chính gồm: 10\% MAU chuyển đổi Premium hoặc trả phí định kỳ, ARPPU gross 60.000~VNĐ/tháng, 15\% MAU có mua lẻ chương với giá trị gross 25.000~VNĐ/tháng, nền tảng giữ 30\% doanh thu nội dung, còn quảng cáo và Creator Services được tính riêng.
+
+\begin{table}[H]
+\centering
+\caption{Dự báo doanh thu thuần 3 năm (đơn vị: triệu VNĐ)}
+\label{tab:revenue-forecast}
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{tabular}{|L{4.7cm}|r|r|r|}
+\hline
+\textbf{Hạng mục} & \textbf{Năm 1} & \textbf{Năm 2} & \textbf{Năm 3} \\
+\hline
+MAU dùng để tính doanh thu & 10.000 & 50.000 & 200.000 \\
+\hline
+Premium, phần nền tảng giữ lại & 216 & 1.080 & 4.320 \\
+\hline
+Mua lẻ chương, phần nền tảng giữ lại & 135 & 675 & 2.700 \\
+\hline
+Doanh thu quảng cáo & 50 & 280 & 1.150 \\
+\hline
+Creator Services & 30 & 200 & 850 \\
+\hline
+\textbf{Tổng doanh thu thuần} & \textbf{431} & \textbf{2.235} & \textbf{9.020} \\
+\hline
+\textbf{Tổng OPEX dự kiến} & \textbf{2.700} & \textbf{3.510} & \textbf{4.563} \\
+\hline
+\rowcolor{red!10}\textbf{Lợi nhuận/lỗ ròng} & \textbf{(2.269)} & \textbf{(1.275)} & \cellcolor{green!15}\textbf{4.457} \\
+\hline
+\end{tabular}
+\end{table}
+
+Kết quả này cho thấy năm 1 và năm 2 vẫn là giai đoạn đầu tư, không nên đặt kỳ vọng lợi nhuận sớm. Mục tiêu tài chính hợp lý trong hai năm đầu là chứng minh unit economics: CAC giảm dần, retention đủ tốt, tỷ lệ trả phí ổn định và chi phí băng thông trên mỗi chương đọc được kiểm soát. Năm 3 mới là thời điểm mô hình có khả năng sinh lời rõ ràng nếu nền tảng đạt quy mô người dùng và kho nội dung như giả định.
+
+\subsubsection{Điểm hoà vốn và độ nhạy}
+
+Với mô hình ở trên, ARPU thuần của nền tảng rơi vào khoảng 3.700--3.800~VNĐ/\allowbreak MAU/\allowbreak tháng. Nếu OPEX ổn định ở mức 300--400 triệu VNĐ/tháng, điểm hoà vốn vận hành sẽ nằm quanh \textbf{80.000--110.000 MAU}, tương ứng giai đoạn cuối năm 2 hoặc đầu năm 3 trong kịch bản cơ sở. Mốc này thực tế hơn so với việc chỉ lấy ARPPU của nhóm trả phí, vì phần lớn MAU vẫn là người dùng miễn phí hoặc chi tiêu thấp.
+
+\begin{table}[H]
+\centering
+\caption{Độ nhạy điểm hoà vốn theo ARPU thuần}
+\label{tab:breakeven-sensitivity}
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{tabular}{|L{4.2cm}|r|r|r|}
+\hline
+\textbf{Kịch bản} & \textbf{ARPU thuần/tháng} & \textbf{OPEX/tháng} & \textbf{MAU hoà vốn} \\
+\hline
+Thận trọng & 3.000~VNĐ & 350 triệu & 117.000 \\
+\hline
+Cơ sở & 3.750~VNĐ & 350 triệu & 94.000 \\
+\hline
+Tích cực & 5.000~VNĐ & 350 triệu & 70.000 \\
+\hline
+\end{tabular}
+\end{table}
+
+Hàm ý quản trị là nền tảng không chỉ cần tăng MAU mà còn phải tăng ARPU thuần bằng cách cải thiện tỷ lệ trả phí, kiểm soát quảng cáo không gây phản cảm, và phát triển Creator Services cho tác giả/studio. Nếu chỉ tăng người dùng miễn phí nhưng không cải thiện tỷ lệ chuyển đổi, chi phí băng thông có thể tăng nhanh hơn doanh thu.
+
+\subsubsection{Lộ trình gọi vốn và quản trị dòng tiền (Runway)}
+
+Bảng~\ref{tab:revenue-forecast} cho thấy lỗ luỹ kế năm 1 và năm 2 vào khoảng \textbf{3.544 triệu VNĐ} trước khi nền tảng đạt lợi nhuận dương ở năm 3. Nếu chỉ huy động đúng 3.200~triệu ở vòng đầu, dòng tiền sẽ cạn vào giữa năm 2 -- trước thời điểm hoà vốn vận hành. Vì vậy, 3.200~triệu \textbf{không phải là tổng vốn cần để đi đến lợi nhuận}, mà là quy mô của \textit{vòng vốn đầu tiên} đủ duy trì hoạt động 12--15 tháng để chứng minh các giả thiết then chốt và mở vòng tiếp theo. Lộ trình gọi vốn được thiết kế thành ba vòng như Bảng~\ref{tab:funding-roadmap}.
+
+\begin{table}[H]
+\centering
+\caption{Lộ trình gọi vốn và milestone giải ngân}
+\label{tab:funding-roadmap}
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{tabular}{|L{2.3cm}|L{2.5cm}|L{2.5cm}|L{6.0cm}|}
+\hline
+\textbf{Vòng vốn} & \textbf{Quy mô} & \textbf{Thời điểm} & \textbf{Milestone cần đạt để mở vòng tiếp theo} \\
+\hline
+Seed / Angel
+& 3.200 triệu VNĐ
+& M0 (trước ra mắt MVP)
+& Ra mắt MVP đúng tiến độ 3--4 tháng; đạt 10.000 MAU và 1.000 user trả phí ở cuối tháng 12; chứng minh CAC $\leq$ 25.000~VNĐ và M1 retention $\geq$ 40\% \\
+\hline
+Pre-Series A
+& 5.000--7.000 triệu VNĐ
+& M12--M15
+& Mở rộng kho nội dung lên 150+ tác phẩm; đạt 30.000--50.000 MAU; ARPPU ổn định 50.000--60.000~VNĐ; tỷ lệ trả phí $\geq$ 8\%; LTV/CAC $\geq$ 2{,}5 \\
+\hline
+Series A
+& 15.000--25.000 triệu VNĐ
+& M24--M30
+& Đạt 100.000+ MAU, vượt điểm hoà vốn vận hành; sẵn sàng cho giai đoạn Scale (mở rộng nội dung, app native, đánh giá thị trường khu vực) \\
+\hline
+\end{tabular}
+\end{table}
+
+Logic phân vòng có ba mục đích. Thứ nhất, \textbf{tránh dilution sớm}: gọi vốn lớn ngay từ đầu khi chưa có traction sẽ ép định giá xuống thấp, founder mất tỷ lệ sở hữu nhiều hơn cần thiết. Thứ hai, \textbf{ép kỷ luật vận hành}: runway 12--15 tháng buộc đội ngũ ưu tiên milestone validation thay vì đốt tiền vào tăng trưởng không bền vững. Thứ ba, \textbf{tạo điểm kiểm chứng cho nhà đầu tư}: mỗi vòng vốn tiếp theo có dữ liệu thực tế (MAU, retention, ARPPU) làm cơ sở định giá, giảm rủi ro cho cả hai phía.
+
+\textit{Phương án dự phòng (Contingency):} Nếu Pre-Series A không đóng được đúng hạn ở tháng 12--15, nền tảng cần kích hoạt một trong ba kịch bản bảo toàn vốn: (i)~giảm 30\% chi phí marketing và chuyển sang kênh organic/referral hoàn toàn để kéo dài runway thêm 4--6 tháng; (ii)~đàm phán bridge round 1.500--2.000~triệu từ nhà đầu tư hiện hữu với điều khoản chuyển đổi vào vòng A; hoặc (iii)~rút gọn quy mô nhân sự, giữ lõi 5--6 người để duy trì hoạt động tối thiểu trong khi tiếp tục đàm phán vòng A. Việc xác định rõ các phương án này trước khi vốn bắt đầu cạn là yêu cầu quản trị bắt buộc, không phải tuỳ chọn.
 
 \subsection{Cơ cấu tổ chức}
-% Sơ đồ tổ chức (Org Chart).
 
-\subsection{Mô tả công việc (Job Description)}
-% JD cho các vị trí chính, kế hoạch nhân sự theo giai đoạn (MVP → Scale).
+Cơ cấu nhân sự được thiết kế theo nguyên tắc lean nhưng không tối giản quá mức. Với nền tảng nội dung bản quyền, ba năng lực không thể thiếu từ đầu là kỹ thuật, nội dung/tác giả và marketing cộng đồng. Nếu thiếu một trong ba, sản phẩm dễ rơi vào một trong ba rủi ro: chạy không ổn định, không có nội dung đủ hấp dẫn, hoặc có nội dung nhưng không tạo được chuyển đổi.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=0.95cm and 0.55cm,
+    every node/.style={font=\small},
+    box/.style={rectangle, draw, rounded corners, minimum width=2.75cm, minimum height=0.85cm, align=center, fill=blue!10},
+    line/.style={draw, thick}
+]
+\node[box, fill=red!15] (ceo) {CEO / Founder};
+
+\node[box, below=of ceo, xshift=-6.4cm] (cto) {CTO};
+\node[box, below=of ceo, xshift=-3.2cm] (cpo) {Product Lead};
+\node[box, below=of ceo] (cmo) {Marketing Lead};
+\node[box, below=of ceo, xshift=4.8cm] (coo) {Content \& Ops Lead};
+
+\node[box, below=of cto] (dev) {2 Backend Devs\\1 Frontend Dev};
+\node[box, below=of cpo] (ux) {1 UX/UI\\Designer};
+\node[box, below=of cmo] (mkt) {1 Content\\Creator};
+\node[box, below=of coo, xshift=-1.6cm] (creatorops) {1 Creator Ops};
+\node[box, below=of coo, xshift=1.6cm] (mod) {1 Moderator};
+
+\draw[line] (ceo) -- (cto);
+\draw[line] (ceo) -- (cpo);
+\draw[line] (ceo) -- (cmo);
+\draw[line] (ceo) -- (coo);
+\draw[line] (cto) -- (dev);
+\draw[line] (cpo) -- (ux);
+\draw[line] (cmo) -- (mkt);
+\draw[line] (coo) -- (creatorops);
+\draw[line] (coo) -- (mod);
+\end{tikzpicture}
+\caption{Sơ đồ tổ chức nền tảng giai đoạn MVP}
+\label{fig:org-chart}
+\end{figure}
+
+Quy mô cuối giai đoạn MVP gồm \textbf{12 vai trò}: 1 CEO, 4 lead chức năng và 7 nhân sự thực thi. Chi phí nhân sự trong năm đầu vẫn được tính theo bình quân 8 FTE vì quá trình tuyển dụng diễn ra theo giai đoạn, không phải tất cả vị trí đều có mặt đủ 12 tháng.
+
+\subsection{Mô tả công việc}
+
+\subsubsection{Các vị trí cốt lõi giai đoạn MVP}
+
+\textbf{1. CEO / Founder.} Chịu trách nhiệm chiến lược, gọi vốn, quan hệ đối tác, pháp lý tổng thể và văn hoá vận hành. KPI chính gồm mốc gọi vốn, tăng trưởng MAU, số tác phẩm onboard và tiến độ ra mắt MVP.
+
+\textbf{2. CTO.} Phụ trách kiến trúc Modular Monolith, bảo mật, hiệu năng tải ảnh và chất lượng vận hành. KPI gồm uptime $\geq$ 99{,}5\%, tốc độ tải ảnh p95 $\leq$ 1{,}5 giây trong điều kiện mục tiêu, không có sự cố bảo mật nghiêm trọng.
+
+\textbf{3. Product Lead.} Quản lý roadmap, backlog, phân tích hành vi người dùng và ưu tiên tính năng. KPI gồm activation rate, M1 retention, tỷ lệ hoàn tất flow mua chương và NPS.
+
+\textbf{4. Marketing Lead.} Phụ trách chiến lược thương hiệu, performance marketing, KOL affiliate và cộng đồng. KPI gồm CAC, tỷ lệ chuyển đổi từ campaign, LTV/CAC và brand search volume.
+
+\textbf{5. Content \& Operations Lead.} Quản lý quan hệ tác giả, nội dung bản quyền, quy trình kiểm duyệt và vận hành hỗ trợ. KPI gồm số tác phẩm onboard/tháng, tỷ lệ cập nhật đúng lịch, thời gian xử lý ticket và mức độ hài lòng của tác giả.
+
+\textbf{6. Backend Developers (2 người).} Xây dựng API, xác thực, thanh toán, quản lý nội dung, dashboard tác giả và tích hợp lưu trữ ảnh. Yêu cầu phù hợp với stack Java/Spring Boot, PostgreSQL, Redis, MinIO và REST API.
+
+\textbf{7. Frontend Developer (1 người).} Phát triển web responsive, tối ưu reader trên mobile/desktop, flow mua Coin/Premium và dashboard cơ bản. KPI gồm Core Web Vitals, tỷ lệ lỗi giao diện và conversion trong flow đọc/mua.
+
+\textbf{8. UX/UI Designer.} Thiết kế trải nghiệm đọc truyện, hệ thống component, giao diện tác giả và các flow thanh toán. Trọng tâm là giảm ma sát khi đọc, mua chương và quay lại chương đang đọc.
+
+\textbf{9. Content Creator.} Sản xuất nội dung mạng xã hội, bài SEO, video ngắn và nội dung campaign. Yêu cầu hiểu văn hoá manga/manhwa/manhua và có khả năng biến nội dung truyện thành chất liệu truyền thông.
+
+\textbf{10. Creator Operations Executive.} Hỗ trợ tác giả đăng tải tác phẩm, kiểm tra metadata, theo dõi lịch cập nhật và hướng dẫn sử dụng dashboard. Đây là vai trò cầu nối giữa sản phẩm kỹ thuật và người sáng tác.
+
+\textbf{11. Content Moderator.} Kiểm duyệt tác phẩm, xử lý báo cáo vi phạm, rà soát nội dung nhạy cảm và phối hợp với Content Lead trong các vấn đề bản quyền.
+
+\subsubsection{\texorpdfstring{Kế hoạch nhân sự theo giai đoạn (MVP $\rightarrow$ Scale)}{Kế hoạch nhân sự theo giai đoạn (MVP -> Scale)}}
+
+\begin{table}[H]
+\centering
+\caption{Lộ trình nhân sự MVP $\rightarrow$ Growth $\rightarrow$ Scale}
+\label{tab:hr-roadmap}
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{tabular}{|L{3.7cm}|c|c|c|}
+\hline
+\textbf{Chức năng} & \textbf{MVP (M0--6)} & \textbf{Growth (M6--18)} & \textbf{Scale (M18+)} \\
+\hline
+Lãnh đạo và lead chức năng & 5 & 6 & 8 \\
+\hline
+Kỹ thuật & 3 & 7 & 15 \\
+\hline
+Sản phẩm và thiết kế & 1 & 3 & 6 \\
+\hline
+Marketing và tăng trưởng & 1 & 4 & 10 \\
+\hline
+Nội dung và vận hành tác giả & 1 & 4 & 12 \\
+\hline
+Kiểm duyệt & 1 & 3 & 8 \\
+\hline
+Chăm sóc khách hàng & 0 (kiêm nhiệm) & 2 & 6 \\
+\hline
+\rowcolor{yellow!15}\textbf{Tổng nhân sự} & \textbf{12} & \textbf{29} & \textbf{65} \\
+\hline
+\end{tabular}
+\end{table}
+
+Nguyên tắc tuyển dụng là tuyển trước nhu cầu khoảng một quý đối với các vị trí dễ trở thành nút thắt, đặc biệt là kiểm duyệt, creator operations và chăm sóc khách hàng. Trước các campaign lớn, đội vận hành phải được bổ sung trước, vì một đợt tăng trưởng người dùng sẽ phản tác dụng nếu kéo theo lỗi thanh toán, chậm duyệt chương hoặc phản hồi tác giả chậm.

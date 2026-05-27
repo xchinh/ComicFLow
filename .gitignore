@@ -1,0 +1,56 @@
+# =========================================================
+# ComicFLow — .gitignore (root)
+# Lưu ý: BE/ComicFlow/ có .gitignore riêng cho Java/Gradle,
+# nên file này không lặp lại phần backend.
+# =========================================================
+
+# ===== Hệ điều hành =====
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+desktop.ini
+
+# ===== Trình soạn thảo / IDE =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ===== Biến môi trường / bí mật =====
+.env
+.env.*
+!.env.example
+
+# =========================================================
+# LaTeX build artifacts (chủ yếu trong report/)
+# Các file này sinh tự động khi compile main.tex
+# =========================================================
+*.aux
+*.lof
+*.log
+*.lot
+*.toc
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.idx
+*.ind
+*.ilg
+*.glo
+*.gls
+*.glg
+*.nav
+*.snm
+*.vrb
+*.xdv
+*.dvi
+*.bak
+
