@@ -10,6 +10,7 @@ import com.example.comicflow.comic.entity.Comic;
 import com.example.comicflow.comic.service.IComicService;
 import com.example.comicflow.common.exception.NotFoundException;
 import com.example.comicflow.storage.service.IMinioService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ public class ChapterService implements IChapterService {
     private final IMinioService minioService;
 
     @Override
+    @Transactional
     public ChapterResponse create(ChapterRequest request) {
         Comic comic = comicService.findById(request.getComicId());
 
@@ -59,5 +61,11 @@ public class ChapterService implements IChapterService {
         }
         String url = minioService.getPaidChapterUrl(chapter.getPdfUrl());
         return chapterMapper.toChapterResponsePaid(chapter, url);
+    }
+
+    @Override
+    public Chapter findById(UUID id) {
+        return chapterRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Chapter not found"));
     }
 }

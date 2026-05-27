@@ -55,3 +55,12 @@ minio:
   secret-key: password123
   bucket-name: comic-storage
 
+momo:
+  partner-code: MOMO
+  access-key: MMjna8BnOtCUYov1BDLzJIADLk6+gtGEhjbOx4bDUxY=
+  secret-key: daeUlmAc/HKluNmrp8hLpu5zyWotBnaZ4tH8bXHmLUE=
+  endpoint: https://test-payment.momo.vn/v2/gateway/api/create
+  redirect-url: http://localhost:3000/payment-success
+  ipn-url: http://localhost:8080/payments/momo/ipn
+
+
