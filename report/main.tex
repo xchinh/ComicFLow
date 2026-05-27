@@ -37,8 +37,8 @@
     footskip=28pt
 ]{geometry}
 
-% Let table-heavy pages end naturally instead of stretching vertical whitespace.
-\raggedbottom
+% Vertically justify pages so floated tables don't leave large gaps at the bottom.
+\flushbottom
 
 \usepackage{setspace}
 \usepackage{indentfirst}
@@ -256,6 +256,9 @@ Sinh viên thực hiện:  & Vũ Xuân Chính & 2210392 \\
 \newpage
 \listoftables
 \thispagestyle{fancy}
+
+\newpage
+\input{sections/00_danh_muc_tu_viet_tat}
 
 \newpage
 \section*{Danh sách thành viên và phân công công việc}
