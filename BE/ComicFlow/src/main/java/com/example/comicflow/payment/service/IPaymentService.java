@@ -6,7 +6,7 @@ import com.example.comicflow.payment.dto.response.MomoCreatePayment;
 import java.util.UUID;
 
 public interface IPaymentService {
-    MomoCreatePayment createPayment(UUID chapterId) throws Exception;
-
+    MomoCreatePayment createChapterPayment(UUID chapterId) throws Exception;
+    MomoCreatePayment createSubscriptionPayment(UUID planId) throws Exception;
     void handleIpn(MomoIpnRequest ipnRequest);
 }

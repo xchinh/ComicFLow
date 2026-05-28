@@ -17,5 +17,7 @@ public interface PaymentRepository extends JpaRepository<Payment, UUID> {
             "LEFT JOIN FETCH p.chapter " +
             "WHERE p.orderId = :orderId"
     )
-    Optional<Payment> findByOderId(@Param("orderId") String orderId);
+    Optional<Payment> findByOrderIdWithJoin(@Param("orderId") String orderId);
+
+    Optional<Payment> findByOrderId(String orderId);
 }

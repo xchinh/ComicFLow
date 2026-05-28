@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface ChapterMapper {
-   Chapter toChapterResponsePaid(ChapterRequest request);
+   Chapter toChapter(ChapterRequest request);
 
    @Mapping(target = "url", source = "pdfUrl")
    @Mapping(target = "comicId", source = "comic.id")

@@ -36,6 +36,7 @@ public class Chapter extends BaseEntity {
     @Builder.Default
     boolean isFree = false;
 
+    @Column(nullable = true)
     String pdfUrl;
 
     @ManyToOne(fetch = FetchType.EAGER)

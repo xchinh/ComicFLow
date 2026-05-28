@@ -20,7 +20,14 @@ public class PaymentController {
 
     @PostMapping("/momo/chapter/{chapterId}")
     public ApiResponse<MomoCreatePayment> createPayment(@PathVariable UUID chapterId) throws Exception {
-        MomoCreatePayment momoCreatePayment = paymentService.createPayment(chapterId);
+        MomoCreatePayment momoCreatePayment = paymentService.createChapterPayment(chapterId);
+
+        return ApiResponse.success("Payment Url created", momoCreatePayment);
+    }
+
+    @PostMapping("/momo/subscription/{planId}")
+    public ApiResponse<MomoCreatePayment> createSubScriptonPayment(@PathVariable UUID planId) throws Exception {
+        MomoCreatePayment momoCreatePayment = paymentService.createSubscriptionPayment(planId);
 
         return ApiResponse.success("Payment Url created", momoCreatePayment);
     }
