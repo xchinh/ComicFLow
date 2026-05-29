@@ -21,7 +21,7 @@ public class ChapterController {
             value = "/author/chapters",
             consumes = "multipart/form-data"
     )
-    public ApiResponse<ChapterResponse> create(@RequestBody @Valid ChapterRequest request) {
+    public ApiResponse<ChapterResponse> create(@ModelAttribute @Valid ChapterRequest request) {
         ChapterResponse response = chapterService.create(request);
 
         return ApiResponse.success("Chapter created successfully", response);

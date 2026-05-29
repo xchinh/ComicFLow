@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.example.comicflow.common.utils.Utils.getCurrentUser;
+
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -117,15 +119,5 @@ public class ComicService implements IComicService {
     public Comic findById(UUID comicId) {
         return comicRepository.findByIdWithUser(comicId)
                 .orElseThrow(() -> new NotFoundException("Comic not found"));
-    }
-
-    private User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new BadRequestException("You are not allowed to get current user");
-        }
-
-        return (User) authentication.getPrincipal();
     }
 }

@@ -30,13 +30,13 @@ public class Chapter extends BaseEntity {
     String title;
 
     @Column(nullable = false)
-    Integer price;
+    Long price;
 
     @Column(nullable = false)
     @Builder.Default
     boolean isFree = false;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     String pdfUrl;
 
     @ManyToOne(fetch = FetchType.EAGER)

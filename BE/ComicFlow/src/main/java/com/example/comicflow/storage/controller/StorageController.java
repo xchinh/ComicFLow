@@ -3,7 +3,7 @@ package com.example.comicflow.storage.controller;
 import com.example.comicflow.common.response.ApiResponse;
 import com.example.comicflow.storage.dto.response.UploadChapter;
 import com.example.comicflow.storage.dto.response.UploadResponse;
-import com.example.comicflow.storage.service.impl.MinioService;
+import com.example.comicflow.storage.service.IMinioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StorageController {
 
-    private final MinioService minioService;
+    private final IMinioService minioService;
 
     @PostMapping("/upload")
     public ApiResponse<UploadResponse> upload(@RequestParam("file") MultipartFile file, @RequestParam("comicId") UUID comicId) {

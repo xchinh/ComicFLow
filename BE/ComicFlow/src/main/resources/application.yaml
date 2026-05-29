@@ -34,7 +34,7 @@ spring:
 
 jwt:
   secret: ${SECRET:2b8379f217698cd92f496a6f722c755f7b3b934d40162247d5f59e4c42be69e9}
-  access-token-expiration: 300000
+  access-token-expiration: 900000
   refresh-token-expiration: 604800000
 
 springdoc:
@@ -54,4 +54,13 @@ minio:
   access-key: admin
   secret-key: password123
   bucket-name: comic-storage
+
+momo:
+  partner-code: MOMO
+  access-key: F8BBA842ECF85
+  secret-key: K951B6PE1waDMi640xX08PD3vg6EkVlz
+  endpoint: https://test-payment.momo.vn/v2/gateway/api/create
+  redirect-url: http://localhost:3000/payment-success
+  ipn-url: https://c7d4-2405-4802-9195-c310-c442-bb0f-fb57-59ac.ngrok-free.app/payments/momo/ipn
+
 
