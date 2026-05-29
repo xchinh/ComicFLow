@@ -152,6 +152,10 @@ public class PaymentService implements IPaymentService {
         Payment payment = paymentRepository.findByOrderIdWithJoin(ipnRequest.getOrderId())
                 .orElseThrow(() -> new NotFoundException("Payment Not Found"));
 
+        if (payment.getStatus() == PaymentStatus.SUCCESS || payment.getStatus() == PaymentStatus.FAILED) {
+            return;
+        }
+
         if (ipnRequest.getResultCode() == 0) {
             payment.setStatus(PaymentStatus.SUCCESS);
             paymentRepository.save(payment);
