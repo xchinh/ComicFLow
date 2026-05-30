@@ -4,6 +4,101 @@
 \section{Use Case và Yêu cầu chức năng}
 % Use Case Diagram + mô tả chi tiết các use case chính.
 
+\subsection{Biểu đồ Use Case tổng thể}
+Hệ thống Nền tảng Xây dựng và Mua bán Truyện tranh số được thiết kế với 4 nhóm tác nhân (actor) chính tham gia vào các module cốt lõi của nền tảng, bao gồm:
+\begin{itemize}
+    \item \textbf{Người dùng khách:} Tương tác chủ yếu với Module Đăng nhập/Đăng xuất để thực hiện đăng nhập và đăng ký tài khoản.
+    \item \textbf{Độc giả:} Người sử dụng hệ thống để đọc truyện, mua các chương truyện trả phí và tương tác, đánh giá tác phẩm.
+    \item \textbf{Tác giả:} Người sáng tạo nội dung, sử dụng hệ thống để tạo truyện, quản lý bản thảo (upload chapter, ảnh), xem dashboard thống kê và đăng bán truyện để nhận doanh thu.
+    \item \textbf{Admin (Quản trị viên):} Chịu trách nhiệm quản lý người dùng và xử lý các báo cáo (reports) vi phạm trên nền tảng.
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/Diagram/use-case-tmđt.png}
+    \caption{Biểu đồ Use Case tổng thể của Nền tảng Xây dựng và Mua bán Truyện tranh số}
+    \label{fig:usecase_tongthe}
+\end{figure}
+
+\subsection{Đặc tả chi tiết các Use Case chính}
+
+\subsubsection{UC-01: Mua truyện}
+\begin{itemize}
+    \item \textbf{Tác nhân (Actor):} Độc giả.
+    \item \textbf{Mô tả:} Độc giả sử dụng xu/coin trong ví để thanh toán và mở khóa các chương truyện hoặc toàn bộ bộ truyện bị khóa (trả phí).
+    \item \textbf{Điều kiện tiên quyết:} Độc giả đã đăng nhập vào hệ thống và có đủ số dư xu/coin trong ví điện tử của nền tảng.
+    \item \textbf{Hậu điều kiện:} Chương truyện hoặc bộ truyện được mở khóa cho tài khoản của độc giả. Số dư ví của độc giả bị trừ đi một khoản tương ứng với giá truyện.
+    \item \textbf{Luồng sự kiện chính:}
+    \begin{enumerate}
+        \item Độc giả bấm vào một chương truyện đang bị khóa (có biểu tượng trả phí).
+        \item Hệ thống hiển thị popup yêu cầu xác nhận mua chương truyện cùng mức giá.
+        \item Độc giả nhấn "Xác nhận thanh toán".
+        \item Hệ thống kiểm tra số dư, trừ tiền trong ví và cấp quyền truy cập nội dung.
+        \item Độc giả được chuyển hướng trực tiếp vào màn hình đọc truyện.
+    \end{enumerate}
+    \item \textbf{Luồng thay thế:} (4a) Nếu số dư trong ví không đủ, hệ thống báo lỗi và hiển thị nút chuyển hướng sang trang "Nạp thêm xu".
+    \item \textbf{Ngoại lệ:} Lỗi timeout cơ sở dữ liệu khi đang trừ tiền. Hệ thống tự động rollback giao dịch, đảm bảo tiền không bị mất và thông báo thử lại sau.
+\end{itemize}
+
+\subsubsection{UC-02: Đánh giá truyện}
+\begin{itemize}
+    \item \textbf{Tác nhân (Actor):} Độc giả.
+    \item \textbf{Mô tả:} Người dùng viết nhận xét và chấm điểm (số sao) cho các bộ truyện mà họ đã đọc hoặc đã mua.
+    \item \textbf{Điều kiện tiên quyết:} Độc giả đã đăng nhập vào hệ thống và đã đọc ít nhất một chương hoặc đã mua bộ truyện đó.
+    \item \textbf{Hậu điều kiện:} Đánh giá được lưu trữ vào cơ sở dữ liệu. Điểm đánh giá trung bình của tác phẩm được cập nhật và hiển thị công khai.
+    \item \textbf{Luồng sự kiện chính:}
+    \begin{enumerate}
+        \item Độc giả lướt xuống khu vực "Đánh giá \& phản hồi" ở cuối trang chi tiết truyện.
+        \item Hệ thống hiển thị biểu mẫu (chọn từ 1 đến 5 sao, khung nhập bình luận).
+        \item Độc giả chọn số sao, điền nhận xét và bấm "Gửi đánh giá".
+        \item Hệ thống kiểm duyệt nội dung tự động bằng AI.
+        \item Hệ thống lưu kết quả và hiển thị bình luận lên trang chi tiết của tác phẩm.
+    \end{enumerate}
+    \item \textbf{Luồng thay thế:} (4a) Nếu phát hiện từ ngữ vi phạm tiêu chuẩn cộng đồng, hệ thống từ chối đăng và yêu cầu người dùng chỉnh sửa lại bình luận.
+    \item \textbf{Ngoại lệ:} Lỗi mất kết nối mạng khi đang gửi. Hệ thống báo lỗi và lưu tạm nội dung người dùng vừa nhập vào cache trình duyệt.
+\end{itemize}
+
+\subsubsection{UC-03: Sáng tác truyện}
+\begin{itemize}
+    \item \textbf{Tác nhân (Actor):} Tác giả.
+    \item \textbf{Mô tả:} Tác giả tạo dự án truyện mới, cập nhật thông tin chung, tạo các chương truyện và tải lên các bản thảo/hình ảnh.
+    \item \textbf{Điều kiện tiên quyết:} Người dùng đã nâng cấp/đăng ký tài khoản thành Tác giả (Creator).
+    \item \textbf{Hậu điều kiện:} Thông tin dự án và các trang bản thảo được lưu trữ trên hệ thống dưới dạng "Bản nháp" (Draft).
+    \item \textbf{Luồng sự kiện chính:}
+    \begin{enumerate}
+        \item Tác giả truy cập vào "Creator Studio Dashboard" và chọn "Tạo truyện mới".
+        \item Tác giả nhập thông tin (Tên truyện, Thể loại, Tóm tắt) và tạo dự án.
+        \item Tác giả chọn "Thêm chương mới" bên trong dự án.
+        \item Hệ thống hiển thị trình tải lên hình ảnh (Uploader).
+        \item Tác giả chọn và tải lên các trang truyện (định dạng JPG/PNG).
+        \item Hệ thống sắp xếp thứ tự trang và tác giả bấm "Lưu bản nháp".
+    \end{enumerate}
+    \item \textbf{Luồng thay thế:} (5a) File hình ảnh tải lên vượt quá dung lượng cho phép hoặc sai định dạng. Hệ thống báo lỗi và đánh dấu đỏ vào file lỗi, yêu cầu tải lại.
+    \item \textbf{Ngoại lệ:} Lỗi từ phía Server lưu trữ (Cloud Storage). Hệ thống báo lỗi tải lên thất bại và yêu cầu tác giả thử lại sau ít phút.
+\end{itemize}
+
+\subsubsection{UC-04: Đăng bán truyện}
+\begin{itemize}
+    \item \textbf{Tác nhân (Actor):} Tác giả.
+    \item \textbf{Mô tả:} Tác giả cấu hình giá bán cho các chương truyện bản nháp và gửi yêu cầu xuất bản để đưa truyện lên Marketplace.
+    \item \textbf{Điều kiện tiên quyết:} Tác giả đã có ít nhất một chương truyện lưu ở trạng thái Bản nháp và đã đồng ý với các Điều khoản chia sẻ doanh thu của nền tảng.
+    \item \textbf{Hậu điều kiện:} Truyện được chuyển sang trạng thái "Công khai" (Public) hoặc "Chờ duyệt" (Pending). Độc giả có thể nhìn thấy và thực hiện mua truyện.
+    \item \textbf{Luồng sự kiện chính:}
+    \begin{enumerate}
+        \item Trong màn hình quản lý chương truyện, tác giả chọn tính năng "Cài đặt xuất bản".
+        \item Tác giả chọn chế độ "Truyện trả phí" và nhập số xu muốn bán cho chương đó.
+        \item Tác giả bấm "Gửi yêu cầu xuất bản".
+        \item Hệ thống kiểm tra các ràng buộc thông tin và đẩy truyện vào danh sách chờ duyệt.
+        \item Sau khi quản trị viên (hoặc hệ thống tự động) duyệt thành công, truyện chính thức hiển thị trên nền tảng với mức giá đã cài đặt.
+    \end{enumerate}
+    \item \textbf{Luồng thay thế:} 
+    \begin{itemize}
+        \item (2a) Tác giả muốn cho đọc thử miễn phí: Chọn chế độ "Miễn phí", bỏ qua bước nhập giá.
+        \item (5a) Truyện bị từ chối do vi phạm bản quyền: Hệ thống gửi thông báo từ chối kèm theo lý do về email của tác giả.
+    \end{itemize}
+    \item \textbf{Ngoại lệ:} Hệ thống cấu hình giá bị lỗi đồng bộ. Trạng thái chương truyện trả về lỗi và yêu cầu tác giả thiết lập lại.
+\end{itemize}
+
 \section{Thiết kế UI/UX}
 \subsection{Brand Identity và Nguyên tắc thiết kế}
 % Màu sắc, font chữ, tone & manner, nguyên tắc thiết kế (Material Design, Atomic Design...).
@@ -13,6 +108,98 @@
 
 \section{Kiến trúc hệ thống}
 \subsection{System Architecture Diagram}
+
+Hệ thống nền tảng truyện tranh số được thiết kế theo kiến trúc phân lớp (Layered Architecture) kết hợp với các dịch vụ bên ngoài (External Services). Các thành phần được chia thành các tầng rõ rệt nhằm đảm bảo tính mở rộng, dễ bảo trì và bảo mật cao nhất cho cả người dùng và dữ liệu tác phẩm.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/Diagram/architecture.png}
+    \caption{Biểu đồ kiến trúc tổng thể của hệ thống}
+    \label{fig:system_architecture}
+\end{figure}
+
+Dựa vào biểu đồ kiến trúc, hệ thống được cấu thành từ 4 lớp chính và 1 khối dịch vụ bên ngoài:
+
+\subsubsection{Tầng Client (Client Layer - ReactJS Web Application)}
+Tầng này đóng vai trò là giao diện tiếp xúc trực tiếp với người dùng, được xây dựng hoàn toàn dưới dạng Ứng dụng Web Single Page Application (SPA) sử dụng \textbf{ReactJS}. Tầng này được chia thành 3 nhóm giao diện chuyên biệt:
+\begin{itemize}
+    \item \textbf{Reader UI:} Giao diện công cộng dành cho độc giả để tìm kiếm, đọc truyện và thực hiện giao dịch mua. Luồng này giao tiếp qua giao thức HTTPS thông thường tới các API công khai.
+    \item \textbf{Author Dashboard:} Trang quản trị dành riêng cho tác giả để tải lên các chương truyện mới, xem thống kê lượt đọc và quản lý doanh thu. Luồng này yêu cầu mức độ bảo mật cao hơn (HTTPS + JWT).
+    \item \textbf{Admin Panel:} Màn hình quản lý nội bộ dành cho ban quản trị để kiểm duyệt nội dung, quản lý người dùng và xử lý báo cáo vi phạm (yêu cầu HTTPS + JWT).
+\end{itemize}
+
+\subsubsection{Tầng Giao tiếp và Bảo mật (API \& Security Gateway)}
+Làm nhiệm vụ tiếp nhận, định tuyến và kiểm tra các yêu cầu (requests) từ phía Client trước khi chuyển xuống tầng xử lý nghiệp vụ:
+\begin{itemize}
+    \item \textbf{REST API Endpoints:} Đảm nhận việc nhận các API call. Các chức năng đọc công khai sẽ đi trực tiếp qua đây xuống tầng Dịch vụ.
+    \item \textbf{JWT Auth Filter:} Đóng vai trò là màng lọc bảo mật khắt khe. Nó kiểm tra tính hợp lệ của token (JWT) cho các API yêu cầu quyền truy cập (như sửa/xóa truyện, giao dịch mua, quyền quản trị). Nếu token hợp lệ (\textit{validate token}), luồng dữ liệu mới được phép đi tiếp.
+\end{itemize}
+
+\subsubsection{Tầng Dịch vụ (Service Layer)}
+Đây là tầng cốt lõi chứa toàn bộ logic nghiệp vụ (Business Logic) của nền tảng, giao tiếp với cơ sở dữ liệu qua \textbf{Repository Layer (Spring Data JPA) $\rightarrow$ Persistence}. Để dễ bảo trì, tầng này được tổ chức thành các module chức năng độc lập:
+\begin{itemize}
+    \item \textbf{Auth Module:} Xử lý các nghiệp vụ đăng nhập (Login), đăng ký (Register) và cấp phát/quản lý JWT.
+    \item \textbf{Comic Module:} Quản lý danh mục (Catalog) và siêu dữ liệu (Metadata) của các bộ truyện.
+    \item \textbf{Chapter Module:} Quản lý nội dung các trang truyện (Pages) và tối ưu hóa luồng tải trang khi đọc (Reading).
+    \item \textbf{Purchase Module:} Xử lý các giao dịch (Transactions) mua chương truyện, kết nối với cổng thanh toán.
+    \item \textbf{Comment Module:} Quản lý hệ thống đánh giá, phản hồi (User Reviews) của người dùng.
+    \item \textbf{Dashboard Module:} Cung cấp và tổng hợp các số liệu phân tích (Analytics) phục vụ cho biểu đồ của tác giả/admin.
+    \item \textbf{Admin Module:} Hỗ trợ các công cụ kiểm duyệt nội dung (Moderation).
+\end{itemize}
+
+\subsubsection{Tầng Lưu trữ Dữ liệu (Data \& Storage Layer)}
+Đảm nhiệm vai trò lưu trữ toàn bộ dữ liệu của hệ thống, bao gồm 3 nền tảng lưu trữ chuyên biệt để tối ưu cho từng loại dữ liệu:
+\begin{itemize}
+    \item \textbf{PostgreSQL (Primary Database):} Cơ sở dữ liệu quan hệ chính, lưu trữ an toàn các dữ liệu có cấu trúc quan trọng (thông tin người dùng, chi tiết giao dịch, thông tin truyện).
+    \item \textbf{Redis (Cache / Sessions):} Sử dụng làm bộ nhớ đệm tốc độ cao để lưu trữ các phiên làm việc (sessions) của người dùng, đồng thời cache các dữ liệu được truy vấn thường xuyên (như danh sách truyện thịnh hành và siêu dữ liệu truyện) nhằm giảm tải tối đa cho Database chính.
+    \item \textbf{MinIO Object Storage:} Hệ thống lưu trữ hướng đối tượng, chuyên dùng để lưu trữ và phân phối khối lượng lớn các tệp tin hình ảnh truyện (Comic Images/Media), giúp tối ưu tốc độ tải ảnh.
+\end{itemize}
+
+\subsubsection{Các dịch vụ bên ngoài (External Services)}
+Hệ thống linh hoạt tích hợp các dịch vụ của bên thứ ba để hoàn thiện hệ sinh thái:
+\begin{itemize}
+    \item \textbf{MoMo Payment Gateway:} Tích hợp thông qua \textit{payment API} để hỗ trợ độc giả thanh toán điện tử tiện lợi khi nạp xu hoặc mua truyện trả phí.
+    \item \textbf{DRM Protection (Content Security):} Dịch vụ mã hóa và bảo vệ bản quyền nội dung (Encrypt content). Các hình ảnh truyện trước khi trả về cho client có thể đi qua lớp DRM để ngăn chặn các hành vi tải lậu hoặc chụp ảnh màn hình trái phép, bảo vệ quyền lợi chính đáng của tác giả.
+\end{itemize}
+
 \subsection{Công nghệ Stack đề xuất}
+
+Dựa trên yêu cầu và thiết kế kiến trúc tổng thể, hệ thống sử dụng các công nghệ sau cho từng phân lớp:
+
+\subsubsection{Tầng Presentation (Frontend)}
+\begin{itemize}
+    \item \textbf{React:} Được sử dụng làm nền tảng xây dựng giao diện, tập trung vào hiệu năng rendering và mang lại khả năng tương tác mượt mà cho người dùng.
+    \item \textbf{Đặc điểm kỹ thuật:} Tầng này giao tiếp với hệ thống qua RESTful API chuẩn hóa và bảo mật xác thực thông qua JWT Interceptors. Hệ thống áp dụng quản lý State tập trung và tối ưu hóa trải nghiệm đọc truyện bằng kỹ thuật Lazy Loading (tải trễ) hình ảnh. Giao diện được thiết kế để hỗ trợ hiển thị Responsive trên đa nền tảng thiết bị.
+\end{itemize}
+
+\subsubsection{Tầng Business (Backend \& Logic nghiệp vụ)}
+\begin{itemize}
+    \item \textbf{Kiến trúc Modular Monolith:} Backend được thiết kế theo kiến trúc Modular Monolith, chia thành các phân hệ độc lập. Các module cốt lõi bao gồm: Auth \& User (Quản lý danh tính), Comic \& Chapter (Quản lý nội dung), Purchase (Quản lý giao dịch và ví tiền), và Comment (Hệ thống tương tác).
+    \item \textbf{Cơ chế phân quyền (RBAC - Role-Based Access Control):} Hệ thống phân quyền chặt chẽ với 3 vai trò (Role) chính:
+    \begin{itemize}
+        \item \textit{Reader (Độc giả):} Được phép truy cập nội dung và thực hiện các thao tác thanh toán.
+        \item \textit{Author (Tác giả):} Quản lý nội dung sáng tác và theo dõi Dashboard doanh thu.
+        \item \textit{Admin (Quản trị viên):} Thực hiện kiểm duyệt và quản trị toàn bộ hệ thống.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Tầng Data (Cơ sở dữ liệu)}
+\begin{itemize}
+    \item \textbf{PostgreSQL:} Được lựa chọn làm cơ sở dữ liệu quan hệ chính để đảm bảo sự tin cậy tuyệt đối cho dữ liệu.
+    \item \textbf{Ưu điểm áp dụng:} Hệ quản trị này tuân thủ tính ACID, đảm bảo các giao dịch mua chương truyện không bao giờ gặp lỗi trạng thái. PostgreSQL tối ưu hóa tốc độ tìm kiếm truyện (theo tên, tác giả, thể loại) thông qua Indexing  và sẵn sàng cho khả năng mở rộng (Scalability) bằng cơ chế Replication (Master-Slave).
+\end{itemize}
+
+\subsubsection{Lưu trữ tài nguyên (Object Storage)}
+\begin{itemize}
+    \item \textbf{MinIO:} Hệ thống sử dụng MinIO làm Object Storage chuyên dụng thay vì lưu trữ file trực tiếp trong Server hoặc Database.
+    \item \textbf{Ưu điểm áp dụng:} MinIO đáp ứng hiệu suất cao khi phải phục vụ hàng triệu tệp tin hình ảnh trang truyện. Việc hỗ trợ chuẩn S3 API giúp hệ thống dễ dàng chuyển đổi sang AWS S3 hoặc Google Cloud Storage trong tương lai. Quan trọng nhất, tài nguyên được bảo mật nội dung trả phí thông qua cơ chế Signed URLs.
+\end{itemize}
+
+\subsubsection{Tối ưu hiệu năng (Caching)}
+\begin{itemize}
+    \item \textbf{Redis:} Đóng vai trò là hệ thống lưu trữ in-memory để tối ưu hiệu năng.
+    \item \textbf{Chức năng chính:} Redis hoạt động như một hệ thống lưu trữ in-memory phục vụ hai vai trò cốt lõi là quản lý phiên làm việc (sessions) của người dùng và lưu trữ dữ liệu đệm (cache). Cụ thể, hệ thống sử dụng Redis để duy trì trạng thái phiên đăng nhập, lưu trữ danh sách truyện thịnh hành ("Hot Comics"), và cache siêu dữ liệu (metadata) của những bộ truyện có lượt xem cao nhằm phục vụ nhanh các truy vấn thường xuyên và giảm tải hệ thống đáng kể.
+\end{itemize}
+
 \subsection{Thiết kế CSDL (ER Diagram)}
 \subsection{Tính mở rộng và Scalability}
