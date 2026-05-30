@@ -14,8 +14,8 @@ desktop.ini
 # ===== Trình soạn thảo / IDE =====
 .vscode/
 .idea/
-*.swp
-*.swo
+**/*.swp
+**/*.swo
 *~
 
 # ===== Biến môi trường / bí mật =====
@@ -27,30 +27,30 @@ desktop.ini
 # LaTeX build artifacts (chủ yếu trong report/)
 # Các file này sinh tự động khi compile main.tex
 # =========================================================
-*.aux
-*.lof
-*.log
-*.lot
-*.toc
-*.out
-*.fls
-*.fdb_latexmk
-*.synctex.gz
-*.synctex(busy)
-*.bbl
-*.blg
-*.bcf
-*.run.xml
-*.idx
-*.ind
-*.ilg
-*.glo
-*.gls
-*.glg
-*.nav
-*.snm
-*.vrb
-*.xdv
-*.dvi
-*.bak
+**/*.aux
+**/*.lof
+**/*.log
+**/*.lot
+**/*.toc
+**/*.out
+**/*.fls
+**/*.fdb_latexmk
+**/*.synctex.gz
+**/*.synctex(busy)
+**/*.bbl
+**/*.blg
+**/*.bcf
+**/*.run.xml
+**/*.idx
+**/*.ind
+**/*.ilg
+**/*.glo
+**/*.gls
+**/*.glg
+**/*.nav
+**/*.snm
+**/*.vrb
+**/*.xdv
+**/*.dvi
+**/*.bak
 
