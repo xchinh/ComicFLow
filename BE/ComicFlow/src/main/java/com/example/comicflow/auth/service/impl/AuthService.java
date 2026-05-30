@@ -1,8 +1,10 @@
 package com.example.comicflow.auth.service.impl;
 
 import com.example.comicflow.auth.dto.request.LoginRequest;
+import com.example.comicflow.auth.dto.request.RefreshTokenRequest;
 import com.example.comicflow.auth.dto.request.RegisterRequest;
 import com.example.comicflow.auth.dto.response.AuthResponse;
+import com.example.comicflow.auth.dto.response.RefreshResponse;
 import com.example.comicflow.auth.service.IAuthService;
 import com.example.comicflow.common.exception.BadRequestException;
 import com.example.comicflow.common.exception.NotFoundException;
@@ -10,7 +12,9 @@ import com.example.comicflow.security.JwtService;
 import com.example.comicflow.user.entity.User;
 import com.example.comicflow.user.enums.Role;
 import com.example.comicflow.user.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,14 +43,15 @@ public class AuthService implements IAuthService {
 
         userRepository.save(user);
 
-        String token = jwtService.generateToken(user.getEmail());
-        return new AuthResponse(token);
+        String accessToken = jwtService.generateToken(user.getEmail());
+        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
+        return new AuthResponse(accessToken, refreshToken);
     }
 
     public AuthResponse login(LoginRequest request){
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() ->
-                        new NotFoundException("Invalid Request")
+                        new NotFoundException("Not found user with email: " + request.getEmail())
                 );
 
         boolean matches = passwordEncoder.matches(request.getPassword(), user.getPassword());
@@ -54,7 +59,20 @@ public class AuthService implements IAuthService {
             throw new BadRequestException("Invalid password");
         }
 
-        String token = jwtService.generateToken(user.getEmail());
-        return new AuthResponse(token);
+        String accessToken = jwtService.generateToken(user.getEmail());
+        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
+        return new AuthResponse(accessToken, refreshToken);
+    }
+
+    @Override
+    public RefreshResponse refresh(RefreshTokenRequest request) {
+        Claims claims = jwtService.extractClaims(request.getRefreshToken());
+        String email = claims.getSubject();
+        System.out.println("Email" + email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Not Found User"));
+
+        String accessToken = jwtService.generateToken(user.getEmail());
+        return new RefreshResponse(accessToken);
     }
 }
