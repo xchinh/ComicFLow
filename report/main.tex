@@ -4,7 +4,7 @@
 % Packages
 % =========================================================
 \usepackage{amssymb,epsfig,latexsym,multicol,array,hhline,fancyhdr}
-\usepackage{vntex}
+\usepackage[utf8]{vntex}
 \usepackage{amsmath}
 \usepackage{lastpage}
 \usepackage{makecell}
@@ -32,10 +32,13 @@
     bottom=2.5cm,
     left=2.5cm,
     right=2.2cm,
-    headheight=32pt,
+    headheight=43pt,
     headsep=14pt,
     footskip=28pt
 ]{geometry}
+
+% Vertically justify pages so floated tables don't leave large gaps at the bottom.
+\flushbottom
 
 \usepackage{setspace}
 \usepackage{indentfirst}
@@ -43,19 +46,20 @@
 
 \usepackage{epsfig}
 \usepackage{tikz}
-\usetikzlibrary{arrows,snakes,backgrounds}
+\usetikzlibrary{arrows,backgrounds,positioning}
 
 % =========================================================
 % Extra packages
 % =========================================================
 \usepackage{longtable}
 \usepackage{listings}
-\usepackage[utf8]{inputenc}
 \usepackage[T5]{fontenc}
-\usepackage[backend=biber,style=ieee]{biblatex}
 \usepackage{url}
 \usepackage{booktabs}
 \usepackage{hyperref}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
 
 % =========================================================
 % Hyperlink and URL settings
@@ -176,6 +180,7 @@
 % Document
 % =========================================================
 \begin{document}
+\pagenumbering{Alph}
 
 % =========================================================
 % Title page
@@ -236,7 +241,7 @@ Sinh viên thực hiện:  & Vũ Xuân Chính & 2210392 \\
 % Mục lục bắt đầu là Trang 1
 % =========================================================
 \pagestyle{fancy}
-\setcounter{page}{1}
+\pagenumbering{arabic}
 
 \renewcommand{\contentsname}{\bfseries\Large MỤC LỤC}
 
@@ -251,6 +256,9 @@ Sinh viên thực hiện:  & Vũ Xuân Chính & 2210392 \\
 \newpage
 \listoftables
 \thispagestyle{fancy}
+
+\newpage
+\input{sections/00_danh_muc_tu_viet_tat}
 
 \newpage
 \section*{Danh sách thành viên và phân công công việc}
