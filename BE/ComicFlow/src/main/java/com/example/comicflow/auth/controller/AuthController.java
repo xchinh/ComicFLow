@@ -1,8 +1,10 @@
 package com.example.comicflow.auth.controller;
 
 import com.example.comicflow.auth.dto.request.LoginRequest;
+import com.example.comicflow.auth.dto.request.RefreshTokenRequest;
 import com.example.comicflow.auth.dto.request.RegisterRequest;
 import com.example.comicflow.auth.dto.response.AuthResponse;
+import com.example.comicflow.auth.dto.response.RefreshResponse;
 import com.example.comicflow.auth.service.IAuthService;
 import com.example.comicflow.common.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -28,5 +30,11 @@ public class AuthController {
     public ApiResponse<AuthResponse> login(@RequestBody @Valid LoginRequest request) {
         AuthResponse authResponse = authService.login(request);
         return ApiResponse.success("Login Successfully", authResponse);
+    }
+
+    @PostMapping("/refresh")
+    public ApiResponse<RefreshResponse> refreshToken(@RequestBody @Valid RefreshTokenRequest request) {
+        RefreshResponse refreshResponse = authService.refresh(request);
+        return ApiResponse.success("Refresh Successfully", refreshResponse);
     }
 }
