@@ -1,0 +1,218 @@
+/* Custom Scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(168, 139, 250, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 139, 250, 0.5);
+}
+
+/* Scrollbar hide utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Creator blog editor content styling */
+.blog-editor h2 {
+  margin: 1.25rem 0 0.75rem;
+  font-size: 1.35rem;
+  line-height: 1.35;
+  font-weight: 800;
+  color: hsl(var(--foreground));
+}
+
+.blog-editor p {
+  margin: 0.75rem 0;
+  color: hsl(var(--foreground));
+}
+
+.blog-editor ul,
+.blog-editor ol {
+  margin: 0.75rem 0 0.75rem 1.4rem;
+  padding-left: 1rem;
+}
+
+.blog-editor ul {
+  list-style: disc;
+}
+
+.blog-editor ol {
+  list-style: decimal;
+}
+
+.blog-editor li {
+  margin: 0.35rem 0;
+}
+
+.blog-editor blockquote {
+  margin: 1rem 0;
+  border-left: 4px solid hsl(var(--primary));
+  border-radius: 0.75rem;
+  background: hsl(var(--muted) / 0.35);
+  padding: 0.75rem 1rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.blog-editor a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Tiptap plugin editor styling */
+.blog-editor-prose h2 {
+  margin: 1.25rem 0 0.75rem;
+  font-size: 1.35rem;
+  line-height: 1.35;
+  font-weight: 800;
+  color: hsl(var(--foreground));
+}
+
+.blog-editor-prose h3 {
+  margin: 1.1rem 0 0.6rem;
+  font-size: 1.15rem;
+  line-height: 1.4;
+  font-weight: 750;
+  color: hsl(var(--foreground));
+}
+
+.blog-editor-prose p {
+  margin: 0.75rem 0;
+  color: hsl(var(--foreground));
+}
+
+.blog-editor-prose p.is-editor-empty:first-child::before {
+  color: hsl(var(--muted-foreground));
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.blog-editor-prose ul,
+.blog-editor-prose ol {
+  margin: 0.75rem 0 0.75rem 1.4rem;
+  padding-left: 1rem;
+}
+
+.blog-editor-prose ul {
+  list-style: disc;
+}
+
+.blog-editor-prose ol {
+  list-style: decimal;
+}
+
+.blog-editor-prose li {
+  margin: 0.35rem 0;
+}
+
+.blog-editor-prose blockquote {
+  margin: 1rem 0;
+  border-left: 4px solid hsl(var(--primary));
+  border-radius: 0.75rem;
+  background: hsl(var(--muted) / 0.35);
+  padding: 0.75rem 1rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.blog-editor-prose a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.blog-editor-prose img {
+  display: block;
+  max-width: 100%;
+}
+
+.blog-editor-prose:focus {
+  outline: none;
+}
+
+/* Public author blog article styling */
+.blog-public-content h2 {
+  margin: 1.5rem 0 0.8rem;
+  font-size: 1.65rem;
+  line-height: 1.25;
+  font-weight: 850;
+  color: hsl(var(--foreground));
+}
+
+.blog-public-content h3 {
+  margin: 1.35rem 0 0.65rem;
+  font-size: 1.25rem;
+  line-height: 1.35;
+  font-weight: 800;
+  color: hsl(var(--foreground));
+}
+
+.blog-public-content p {
+  margin: 0.9rem 0;
+  color: hsl(var(--foreground));
+  font-size: 1rem;
+  line-height: 1.85;
+}
+
+.blog-public-content ul,
+.blog-public-content ol {
+  margin: 1rem 0 1rem 1.35rem;
+  padding-left: 1rem;
+  color: hsl(var(--foreground));
+}
+
+.blog-public-content ul {
+  list-style: disc;
+}
+
+.blog-public-content ol {
+  list-style: decimal;
+}
+
+.blog-public-content li {
+  margin: 0.45rem 0;
+  line-height: 1.75;
+}
+
+.blog-public-content blockquote {
+  margin: 1.25rem 0;
+  border-left: 4px solid hsl(var(--primary));
+  border-radius: 1rem;
+  background: hsl(var(--muted) / 0.35);
+  padding: 1rem 1.25rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.blog-public-content a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.blog-public-content img {
+  display: block;
+  max-width: 100%;
+  border-radius: 1rem;
+  border: 1px solid hsl(var(--border));
+}

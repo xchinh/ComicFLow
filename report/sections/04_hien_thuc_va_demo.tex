@@ -52,10 +52,78 @@ Từ thiết kế mô hình Thực thể - Mối kết hợp (ERD) mức khái n
     \item \textbf{Full-Text Search / Trigram Indexes:} Cân nhắc áp dụng chỉ mục GIN (Generalized Inverted Index) trên trường \texttt{title} của bảng \texttt{comics} để hỗ trợ tìm kiếm truyện theo từ khóa một cách nhanh chóng và chính xác.
 \end{itemize}
 
-\subsection{Backend Implementation (Node.js / Express / NestJS...)}
-% Cấu trúc thư mục, API design, authentication...
+\subsection{Hiện thực Backend (Java Spring Boot)}
+Backend của hệ thống được xây dựng dưới dạng một dịch vụ Monolith mạnh mẽ, sẵn sàng để chuyển đổi sang kiến trúc Microservices. Sử dụng \textbf{Java 21} và \textbf{Spring Boot 3.4.0}, hệ thống tận dụng các tính năng mới nhất để tối ưu hiệu năng và quản lý tài nguyên.
 
-\subsection{Frontend Implementation}
+\subsubsection{Kiến trúc và Các lớp xử lý}
+Hệ thống tuân thủ mô hình \textbf{Layered Architecture} giúp tách biệt rõ ràng các trách nhiệm:
+\begin{itemize}
+    \item \textbf{Controller Layer}: Sử dụng \texttt{@RestController} để định nghĩa các RESTful API. Tích hợp \textbf{SpringDoc OpenAPI} để tự động tạo tài liệu API Swagger, giúp việc phát triển Frontend và kiểm thử trở nên dễ dàng.
+    \item \textbf{Service Layer}: Chứa toàn bộ logic nghiệp vụ (Business Logic). Các nghiệp vụ phức tạp như xử lý thanh toán, kích hoạt gói hội viên hay quản lý tệp tin được đóng gói tại đây.
+    \item \textbf{Repository Layer}: Sử dụng \textbf{Spring Data JPA} để tương tác với PostgreSQL. Các câu truy vấn được tối ưu hóa thông qua cơ chế \textit{Fetch Join} để tránh lỗi N+1 và cải thiện tốc độ tải dữ liệu.
+    \item \textbf{DTO \& Mapper}: Sử dụng \textbf{MapStruct} để chuyển đổi tự động giữa Entity và DTO, đảm bảo tính hiệu suất và giảm thiểu mã nguồn lặp lại.
+\end{itemize}
+
+\subsubsection{Bảo mật và Xác thực (Spring Security \& JWT)}
+Hệ thống triển khai cơ chế bảo mật không trạng thái (\textit{Stateless Authentication}):
+\begin{itemize}
+    \item \textbf{JWT (JSON Web Token)}: Sử dụng thư viện \texttt{jjwt} để tạo và xác thực Token. Hệ thống hỗ trợ cả \textit{Access Token} và \textit{Refresh Token} để tối ưu trải nghiệm người dùng và bảo mật.
+    \item \textbf{RBAC (Role-based Access Control)}: Phân quyền chặt chẽ cho các nhóm người dùng: \texttt{READER} (Người đọc), \texttt{AUTHOR} (Tác giả) và \texttt{ADMIN} (Quản trị viên). Việc phân quyền được cấu hình tập trung tại \texttt{SecurityConfig} và sử dụng \texttt{@PreAuthorize} trên từng phương thức.
+    \item \textbf{Password Hashing}: Sử dụng \texttt{BCryptPasswordEncoder} để mã hóa mật khẩu trước khi lưu trữ vào CSDL.
+\end{itemize}
+
+\subsubsection{Quản lý Lưu trữ với MinIO}
+Để xử lý lượng lớn dữ liệu hình ảnh và tệp tin PDF của truyện tranh, hệ thống tích hợp với \textbf{MinIO Object Storage}:
+\begin{itemize}
+    \item \textbf{Phân loại nội dung}: Ảnh bìa truyện được lưu trữ công khai, trong khi các tệp PDF của chương truyện được phân loại thành \textit{Free} (Miễn phí) và \textit{Paid} (Trả phí).
+    \item \textbf{Bảo mật nội dung trả phí}: Sử dụng cơ chế \textbf{Presigned URL}. Khi người dùng hợp lệ yêu cầu đọc một chương trả phí, hệ thống sẽ sinh ra một URL tạm thời có thời hạn (ví dụ: 15 phút). Điều này ngăn chặn việc chia sẻ link trái phép và bảo vệ bản quyền của tác giả.
+\end{itemize}
+
+\subsubsection{Tích hợp Thanh toán MoMo}
+Hệ thống hỗ trợ thanh toán trực tuyến thông qua cổng \textbf{MoMo} với quy trình bảo mật nghiêm ngặt:
+\begin{itemize}
+    \item \textbf{Capture Wallet}: Sử dụng luồng thanh toán qua ví điện tử MoMo. Hệ thống tính toán chữ ký số (\textit{Signature}) bằng thuật toán \textbf{HMAC-SHA256} để đảm bảo tính toàn vẹn của giao dịch.
+    \item \textbf{Xử lý bất đồng bộ (IPN)}: Hệ thống triển khai Endpoint \textit{Instant Payment Notification} để nhận kết quả thanh toán từ MoMo một cách tự động và cập nhật trạng thái đơn hàng ngay lập tức.
+\end{itemize}
+
+\subsubsection{Xử lý lỗi tập trung}
+Hệ thống sử dụng \texttt{@RestControllerAdvice} để xây dựng lớp xử lý ngoại lệ tập trung (\textbf{Global Exception Handling}):
+\begin{itemize}
+    \item Mọi lỗi phát sinh (NotFound, BadRequest, MinioException,...) đều được bắt và định dạng lại theo cấu trúc \texttt{ApiResponse} chuẩn hóa.
+    \item Giúp Client (Frontend) dễ dàng xử lý các tình huống lỗi và đảm bảo thông tin bảo mật của hệ thống không bị lộ ra ngoài qua các Stacktrace.
+\end{itemize}
+
+\subsection{Hiện thực Frontend (React.js \& TypeScript)}
+Frontend của ComicFlow được xây dựng với các công nghệ web hiện đại, tập trung vào hiệu năng tải trang và trải nghiệm người dùng mượt mà trên mọi thiết bị (Responsive Design).
+
+\subsubsection{Công nghệ lõi và Quy trình xây dựng}
+\begin{itemize}
+    \item \textbf{Framework}: Sử dụng \textbf{React 18} kết hợp với \textbf{TypeScript} để đảm bảo tính chặt chẽ về kiểu dữ liệu và giảm thiểu lỗi trong quá trình phát triển.
+    \item \textbf{Build Tool}: Sử dụng \textbf{Vite} mang lại tốc độ Hot Module Replacement (HMR) cực nhanh, giúp tối ưu hóa quy trình phát triển và đóng gói ứng dụng.
+    \item \textbf{Styling}: Tích hợp \textbf{Tailwind CSS v4} - framework CSS utility-first mới nhất, giúp xây dựng giao diện tùy chỉnh nhanh chóng mà không cần viết các tệp CSS dài dòng.
+\end{itemize}
+
+\subsubsection{Kiến trúc ứng dụng và Quản lý trạng thái}
+\begin{itemize}
+    \item \textbf{Routing}: Sử dụng \textbf{React Router v7} để quản lý các tuyến đường ứng dụng (Client-side routing). Cấu trúc ứng dụng được chia thành các \textit{Layouts} và \textit{Pages} riêng biệt (Explore, Creator Dashboard, Admin, Reader,...).
+    \item \textbf{Component Library}: Sử dụng kết hợp \textbf{Material UI (MUI)} và các primitives của \textbf{Radix UI} để xây dựng các thành phần giao diện phức tạp như Dialog, Dropdown, Tabs mà vẫn đảm bảo tính tùy biến cao và hỗ trợ Accessibility.
+    \item \textbf{Animations}: Tích hợp \textbf{Framer Motion} để tạo các hiệu ứng chuyển trang, trượt giao diện và các tương tác nhỏ (Micro-interactions) mượt mà, tạo cảm giác cao cấp cho ứng dụng.
+\end{itemize}
+
+\subsubsection{Giao tiếp API và Xử lý xác thực}
+Frontend kết nối với Backend thông qua một lớp API client tùy chỉnh được xây dựng dựa trên \textbf{Fetch API}:
+\begin{itemize}
+    \item \textbf{JWT Management}: Token được lưu trữ an toàn trong \texttt{localStorage}. Hệ thống tự động đính kèm Token vào Header Authorization của mỗi yêu cầu.
+    \item \textbf{Silent Refresh Mechanism}: Triển khai cơ chế tự động làm mới Token (\textit{Refresh Token}) khi Access Token hết hạn. Điều này giúp người dùng duy trì phiên đăng nhập mà không bị ngắt quãng trải nghiệm.
+    \item \textbf{Standardized Response}: Mọi phản hồi từ Backend đều được ánh xạ (mapping) từ định dạng \texttt{ApiResponse} của Java sang các Interface tương ứng trong TypeScript, đảm bảo tính nhất quán dữ liệu.
+\end{itemize}
+
+\subsubsection{Các tính năng Frontend nổi bật}
+\begin{itemize}
+    \item \textbf{Creator Dashboard}: Cung cấp các biểu đồ thống kê lượt xem, doanh thu sử dụng thư viện \textbf{Recharts}.
+    \item \textbf{Rich Text Editor}: Tích hợp \textbf{TipTap} để cho phép tác giả soạn thảo các bài đăng Blog và mô tả truyện tranh một cách chuyên nghiệp.
+    \item \textbf{Secure Comic Reader}: Trình đọc truyện tối ưu, tự động tải các trang truyện từ URL bảo mật (Presigned) và hỗ trợ chế độ đọc liên tục.
+\end{itemize}
 
 \section{Các chức năng đã triển khai}
 \begin{enumerate}
@@ -103,6 +171,6 @@ Hệ thống thực hiện User Acceptance Testing (UAT) thông qua các kịch 
 \section{Demo hệ thống}
 Video Demo thể hiện đầy đủ các luồng hoạt động từ Đăng ký, Đăng tải truyện đến Thanh toán và Đọc truyện:
 
-\textbf{Video Demo:} \href{https://youtu.be/example_link}{Xem Video Demo tại đây}
+\textbf{Video Demo:} \href{https://youtu.be/h_Qce4Uvx9A}{Xem Video Demo tại đây}
 
 Hệ thống hoạt động mượt mà, dữ liệu được đồng bộ hóa tức thì xuống PostgreSQL và các tệp tin được quản lý an toàn trên MinIO.

@@ -61,6 +61,6 @@ momo:
   secret-key: K951B6PE1waDMi640xX08PD3vg6EkVlz
   endpoint: https://test-payment.momo.vn/v2/gateway/api/create
   redirect-url: http://localhost:3000/payment-success
-  ipn-url: https://c7d4-2405-4802-9195-c310-c442-bb0f-fb57-59ac.ngrok-free.app/payments/momo/ipn
+  ipn-url: https://154a-2405-4802-9195-c310-d7f8-897b-ef58-4d48.ngrok-free.app/payments/momo/ipn
 
 
