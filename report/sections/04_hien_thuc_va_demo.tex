@@ -2,67 +2,60 @@
 \label{chap:phan5}
 
 \section{Kiến trúc hiện thực}
-Hệ thống "ComicFlow" được hiện thực hóa dựa trên kiến trúc Microservices-ready Monolith, sử dụng các công nghệ hiện đại nhằm đảm bảo tính hiệu năng, bảo mật và khả năng mở rộng.
 
-\subsection{Hiện thực Cơ sở dữ liệu (PostgreSQL)}
-Dữ liệu của hệ thống được quản lý bởi PostgreSQL 16. Sơ đồ thực thể (ERD) đã được chuyển đổi thành các bảng vật lý với các ràng buộc khóa ngoại và index tối ưu:
+\subsection{Database Implementation (PostgreSQL)}
+
+Từ thiết kế mô hình Thực thể - Mối kết hợp (ERD) mức khái niệm, hệ thống được hiện thực hóa thành lược đồ cơ sở dữ liệu vật lý (Physical Schema, thế hiện ở Hình \ref{fig:physical_schema}) trên hệ quản trị PostgreSQL. Thiết kế này tuân thủ chặt chẽ các quy chuẩn về chuẩn hóa dữ liệu, đồng thời tối ưu hóa các kiểu dữ liệu để đáp ứng khả năng mở rộng của nền tảng.
+
+\begin{figure}[htbp]
+    \centering
+    % Nhớ đổi tên file và định dạng cho khớp với file bạn lưu trong thư mục
+    \includegraphics[width=0.9\textwidth]{images/Diagram/erd-schema.png} 
+    
+    % Chọn 1 trong các caption bên dưới:
+    \caption{Lược đồ cơ sở dữ liệu vật lý (Physical Schema) triển khai trên PostgreSQL}
+    \label{fig:physical_schema}
+\end{figure}
+
+\subsubsection{Chiến lược thiết kế và Kiểu dữ liệu}
 \begin{itemize}
-    \item \textbf{users}: Lưu trữ thông tin người dùng, mật khẩu (đã mã hóa BCrypt), vai trò (ADMIN, USER, AUTHOR).
-    \item \textbf{comics}: Lưu trữ thông tin truyện tranh bao gồm tiêu đề, mô tả, trạng thái và tác giả.
-    \item \textbf{chapters}: Lưu trữ các chương của truyện, giá bán (price) và liên kết đến file nội dung trên MinIO.
-    \item \textbf{payments}: Ghi lại lịch sử giao dịch mua chương hoặc mua gói đăng ký.
-    \item \textbf{subscriptions}: Quản lý các gói thuê bao người dùng đã đăng ký để đọc truyện theo định kỳ.
+    \item \textbf{Khóa chính (Primary Key):} Toàn bộ các bảng trong hệ thống đều sử dụng kiểu dữ liệu \texttt{uuid} (Universally Unique Identifier) cho khóa chính (\texttt{id}) thay vì số nguyên tự tăng (serial/integer). Việc sử dụng UUID giúp tăng cường bảo mật (tránh lỗi cạn kiệt ID và khó bị đoán định số lượng bản ghi) cũng như hỗ trợ tốt cho việc phân tán dữ liệu sau này.
+    \item \textbf{Auditing (Kiểm toán dữ liệu):} Hầu hết các bảng đều tích hợp sẵn hai trường \texttt{created\_at} và \texttt{updated\_at} với kiểu \texttt{timestamp(6)} để theo dõi vòng đời của từng bản ghi, phục vụ đắc lực cho công tác gỡ lỗi và thống kê.
+    \item \textbf{Xử lý tiền tệ:} Các trường liên quan đến giá cả và thanh toán (\texttt{price}, \texttt{amount}) đều sử dụng kiểu \texttt{bigint} để tránh sai số thập phân trong các giao dịch tài chính.
 \end{itemize}
 
-\subsection{Hiện thực Backend (Java Spring Boot)}
-Backend của hệ thống được xây dựng dưới dạng một dịch vụ Monolith mạnh mẽ, sẵn sàng để chuyển đổi sang kiến trúc Microservices. Sử dụng \textbf{Java 21} và \textbf{Spring Boot 3.4.0}, hệ thống tận dụng các tính năng mới nhất để tối ưu hiệu năng và quản lý tài nguyên.
+\subsubsection{Chi tiết các bảng (Tables) và Quan hệ (Relationships)}
 
-\subsubsection{Kiến trúc và Các lớp xử lý}
-Hệ thống tuân thủ mô hình \textbf{Layered Architecture} giúp tách biệt rõ ràng các trách nhiệm:
+\textbf{Nhóm Quản lý Người dùng (Users):}
 \begin{itemize}
-    \item \textbf{Controller Layer}: Sử dụng \texttt{@RestController} để định nghĩa các RESTful API. Tích hợp \textbf{SpringDoc OpenAPI} để tự động tạo tài liệu API Swagger, giúp việc phát triển Frontend và kiểm thử trở nên dễ dàng.
-    \item \textbf{Service Layer}: Chứa toàn bộ logic nghiệp vụ (Business Logic). Các nghiệp vụ phức tạp như xử lý thanh toán, kích hoạt gói hội viên hay quản lý tệp tin được đóng gói tại đây.
-    \item \textbf{Repository Layer}: Sử dụng \textbf{Spring Data JPA} để tương tác với PostgreSQL. Các câu truy vấn được tối ưu hóa thông qua cơ chế \textit{Fetch Join} để tránh lỗi N+1 và cải thiện tốc độ tải dữ liệu.
-    \item \textbf{DTO \& Mapper}: Sử dụng \textbf{MapStruct} để chuyển đổi tự động giữa Entity và DTO, đảm bảo tính hiệu suất và giảm thiểu mã nguồn lặp lại.
+    \item \textbf{\texttt{users}:} Bảng gốc quản lý danh tính với các thông tin định danh như \texttt{username}, \texttt{email}, \texttt{password} (đã mã hóa) và phân quyền hệ thống qua trường \texttt{role}. Trường \texttt{user\_status} hỗ trợ việc khóa/mở khóa tài khoản (ban/unban).
 \end{itemize}
 
-\subsubsection{Bảo mật và Xác thực (Spring Security \& JWT)}
-Hệ thống triển khai cơ chế bảo mật không trạng thái (\textit{Stateless Authentication}):
+\textbf{Nhóm Quản lý Nội dung (Content):}
 \begin{itemize}
-    \item \textbf{JWT (JSON Web Token)}: Sử dụng thư viện \texttt{jjwt} để tạo và xác thực Token. Token được đính kèm vào Header của mỗi request để xác định định danh người dùng.
-    \item \textbf{RBAC (Role-based Access Control)}: Phân quyền chặt chẽ cho các nhóm người dùng: \texttt{READER} (Người đọc), \texttt{AUTHOR} (Tác giả) và \texttt{ADMIN} (Quản trị viên). Việc phân quyền được cấu hình tập trung tại \texttt{SecurityConfig} và sử dụng \texttt{@PreAuthorize} trên từng phương thức.
-    \item \textbf{Password Hashing}: Sử dụng \texttt{BCryptPasswordEncoder} để mã hóa mật khẩu trước khi lưu trữ vào CSDL.
+    \item \textbf{\texttt{comics}:} Quản lý thông tin chung của truyện. Trường \texttt{author\_id} là khóa ngoại (FK) tham chiếu đến \texttt{users.id}. Ảnh bìa được lưu dưới dạng chuỗi đường dẫn (\texttt{cover\_image\_url}) trỏ tới hệ thống MinIO.
+    \item \textbf{\texttt{chapters}:} Quản lý chi tiết từng chương, liên kết với truyện qua \texttt{comic\_id} (FK). Trường \texttt{is\_free} (boolean) dùng làm ranh giới xác định paywall, kết hợp với \texttt{pdf\_url} lưu trữ nội dung lõi của chương truyện.
 \end{itemize}
 
-\subsubsection{Quản lý Lưu trữ với MinIO}
-Để xử lý lượng lớn dữ liệu hình ảnh và tệp tin PDF của truyện tranh, hệ thống tích hợp với \textbf{MinIO Object Storage}:
+\textbf{Nhóm Giao dịch và Doanh thu (Monetization):}
 \begin{itemize}
-    \item \textbf{Phân loại nội dung}: Ảnh bìa truyện được lưu trữ công khai, trong khi các tệp PDF của chương truyện được phân loại thành \textit{Free} (Miễn phí) và \textit{Paid} (Trả phí).
-    \item \textbf{Bảo mật nội dung trả phí}: Sử dụng cơ chế \textbf{Presigned URL}. Khi người dùng hợp lệ yêu cầu đọc một chương trả phí, hệ thống sẽ sinh ra một URL tạm thời có thời hạn (ví dụ: 15 phút). Điều này ngăn chặn việc chia sẻ link trái phép và bảo vệ bản quyền của tác giả.
+    \item \textbf{\texttt{purchases}:} Bảng ghi nhận hành vi mua lẻ chương. Chứa khóa ngoại trỏ đến \texttt{user\_id} (người mua) và \texttt{chapter\_id} (chương được mua), cùng số tiền thanh toán \texttt{amount}.
+    \item \textbf{\texttt{subscription\_plans} \& \textbf{\texttt{subscriptions}}:} Bảng \texttt{subscription\_plans} định nghĩa các gói (giá tiền, thời hạn \texttt{duration\_days}, và giới hạn \texttt{chapter\_limit}). Bảng \texttt{subscriptions} ghi nhận gói đang kích hoạt của người dùng cụ thể với \texttt{start\_date} và \texttt{end\_date}.
+    \item \textbf{\texttt{payments}:} Bảng tổng hợp lịch sử giao dịch qua cổng thanh toán. Hỗ trợ trường \texttt{target\_type} để định tuyến thanh toán (mua lẻ hay mua gói), liên kết linh hoạt với \texttt{chapter\_id} hoặc \texttt{subscription\_plan\_id}, đồng thời lưu vết mã giao dịch từ đối tác (\texttt{order\_id}, \texttt{request\_id}).
 \end{itemize}
 
-\subsubsection{Tích hợp Thanh toán MoMo}
-Hệ thống hỗ trợ thanh toán trực tuyến thông qua cổng \textbf{MoMo} với quy trình bảo mật nghiêm ngặt:
+\subsubsection{Chiến lược Đánh chỉ mục (Indexing Strategy)}
+Để tối ưu hóa hiệu suất truy vấn trên PostgreSQL cho một hệ thống mang tính chất đọc nhiều (read-heavy), các chiến lược Indexing sau được triển khai:
 \begin{itemize}
-    \item \textbf{Capture Wallet}: Sử dụng luồng thanh toán qua ví điện tử MoMo. Hệ thống tính toán chữ ký số (\textit{Signature}) bằng thuật toán \textbf{HMAC-SHA256} để đảm bảo tính toàn vẹn của giao dịch.
-    \item \textbf{Xử lý bất đồng bộ (IPN)}: Hệ thống triển khai Endpoint \textit{Instant Payment Notification} để nhận kết quả thanh toán từ MoMo một cách tự động và cập nhật trạng thái đơn hàng (mua lẻ chương hoặc kích hoạt gói Subscription) ngay lập tức.
+    \item \textbf{Foreign Key Indexes (B-Tree):} Tạo chỉ mục B-Tree trên tất cả các cột khóa ngoại (\texttt{author\_id}, \texttt{comic\_id}, \texttt{user\_id} trong bảng purchases/subscriptions) để tăng tốc độ kết nối (JOIN) giữa các bảng.
+    \item \textbf{Unique Indexes:} Áp dụng cho cột \texttt{email} và \texttt{username} trong bảng \texttt{users} nhằm đảm bảo tính duy nhất và tăng tốc thao tác đăng nhập.
+    \item \textbf{Full-Text Search / Trigram Indexes:} Cân nhắc áp dụng chỉ mục GIN (Generalized Inverted Index) trên trường \texttt{title} của bảng \texttt{comics} để hỗ trợ tìm kiếm truyện theo từ khóa một cách nhanh chóng và chính xác.
 \end{itemize}
 
-\subsubsection{Xử lý lỗi tập trung}
-Hệ thống sử dụng \texttt{@RestControllerAdvice} để xây dựng lớp xử lý ngoại lệ tập trung (\textbf{Global Exception Handling}):
-\begin{itemize}
-    \item Mọi lỗi phát sinh (NotFound, BadRequest, MinioException,...) đều được bắt và định dạng lại theo cấu trúc \texttt{ApiResponse} chuẩn hóa.
-    \item Giúp Client (Frontend) dễ dàng xử lý các tình huống lỗi và đảm bảo thông tin bảo mật của hệ thống không bị lộ ra ngoài qua các Stacktrace.
-\end{itemize}
+\subsection{Backend Implementation (Node.js / Express / NestJS...)}
+% Cấu trúc thư mục, API design, authentication...
 
-
-\subsection{Hiện thực Frontend}
-Frontend được xây dựng với React.js, cung cấp giao diện người dùng mượt mà và phản hồi nhanh (Responsive Design):
-\begin{itemize}
-    \item Sử dụng Redux Toolkit để quản lý trạng thái ứng dụng.
-    \item Axios để kết nối với Backend APIs.
-    \item Tailwind CSS cho phần định dạng giao diện chuyên nghiệp.
-\end{itemize}
+\subsection{Frontend Implementation}
 
 \section{Các chức năng đã triển khai}
 \begin{enumerate}
