@@ -2,8 +2,55 @@
 \label{chap:phan5}
 
 \section{Kiến trúc hiện thực}
+
 \subsection{Database Implementation (PostgreSQL)}
-% Schema, bảng chính, quan hệ, index...
+
+Từ thiết kế mô hình Thực thể - Mối kết hợp (ERD) mức khái niệm, hệ thống được hiện thực hóa thành lược đồ cơ sở dữ liệu vật lý (Physical Schema, thế hiện ở Hình \ref{fig:physical_schema}) trên hệ quản trị PostgreSQL. Thiết kế này tuân thủ chặt chẽ các quy chuẩn về chuẩn hóa dữ liệu, đồng thời tối ưu hóa các kiểu dữ liệu để đáp ứng khả năng mở rộng của nền tảng.
+
+\begin{figure}[htbp]
+    \centering
+    % Nhớ đổi tên file và định dạng cho khớp với file bạn lưu trong thư mục
+    \includegraphics[width=0.9\textwidth]{images/Diagram/erd-schema.png} 
+    
+    % Chọn 1 trong các caption bên dưới:
+    \caption{Lược đồ cơ sở dữ liệu vật lý (Physical Schema) triển khai trên PostgreSQL}
+    \label{fig:physical_schema}
+\end{figure}
+
+\subsubsection{Chiến lược thiết kế và Kiểu dữ liệu}
+\begin{itemize}
+    \item \textbf{Khóa chính (Primary Key):} Toàn bộ các bảng trong hệ thống đều sử dụng kiểu dữ liệu \texttt{uuid} (Universally Unique Identifier) cho khóa chính (\texttt{id}) thay vì số nguyên tự tăng (serial/integer). Việc sử dụng UUID giúp tăng cường bảo mật (tránh lỗi cạn kiệt ID và khó bị đoán định số lượng bản ghi) cũng như hỗ trợ tốt cho việc phân tán dữ liệu sau này.
+    \item \textbf{Auditing (Kiểm toán dữ liệu):} Hầu hết các bảng đều tích hợp sẵn hai trường \texttt{created\_at} và \texttt{updated\_at} với kiểu \texttt{timestamp(6)} để theo dõi vòng đời của từng bản ghi, phục vụ đắc lực cho công tác gỡ lỗi và thống kê.
+    \item \textbf{Xử lý tiền tệ:} Các trường liên quan đến giá cả và thanh toán (\texttt{price}, \texttt{amount}) đều sử dụng kiểu \texttt{bigint} để tránh sai số thập phân trong các giao dịch tài chính.
+\end{itemize}
+
+\subsubsection{Chi tiết các bảng (Tables) và Quan hệ (Relationships)}
+
+\textbf{Nhóm Quản lý Người dùng (Users):}
+\begin{itemize}
+    \item \textbf{\texttt{users}:} Bảng gốc quản lý danh tính với các thông tin định danh như \texttt{username}, \texttt{email}, \texttt{password} (đã mã hóa) và phân quyền hệ thống qua trường \texttt{role}. Trường \texttt{user\_status} hỗ trợ việc khóa/mở khóa tài khoản (ban/unban).
+\end{itemize}
+
+\textbf{Nhóm Quản lý Nội dung (Content):}
+\begin{itemize}
+    \item \textbf{\texttt{comics}:} Quản lý thông tin chung của truyện. Trường \texttt{author\_id} là khóa ngoại (FK) tham chiếu đến \texttt{users.id}. Ảnh bìa được lưu dưới dạng chuỗi đường dẫn (\texttt{cover\_image\_url}) trỏ tới hệ thống MinIO.
+    \item \textbf{\texttt{chapters}:} Quản lý chi tiết từng chương, liên kết với truyện qua \texttt{comic\_id} (FK). Trường \texttt{is\_free} (boolean) dùng làm ranh giới xác định paywall, kết hợp với \texttt{pdf\_url} lưu trữ nội dung lõi của chương truyện.
+\end{itemize}
+
+\textbf{Nhóm Giao dịch và Doanh thu (Monetization):}
+\begin{itemize}
+    \item \textbf{\texttt{purchases}:} Bảng ghi nhận hành vi mua lẻ chương. Chứa khóa ngoại trỏ đến \texttt{user\_id} (người mua) và \texttt{chapter\_id} (chương được mua), cùng số tiền thanh toán \texttt{amount}.
+    \item \textbf{\texttt{subscription\_plans} \& \textbf{\texttt{subscriptions}}:} Bảng \texttt{subscription\_plans} định nghĩa các gói (giá tiền, thời hạn \texttt{duration\_days}, và giới hạn \texttt{chapter\_limit}). Bảng \texttt{subscriptions} ghi nhận gói đang kích hoạt của người dùng cụ thể với \texttt{start\_date} và \texttt{end\_date}.
+    \item \textbf{\texttt{payments}:} Bảng tổng hợp lịch sử giao dịch qua cổng thanh toán. Hỗ trợ trường \texttt{target\_type} để định tuyến thanh toán (mua lẻ hay mua gói), liên kết linh hoạt với \texttt{chapter\_id} hoặc \texttt{subscription\_plan\_id}, đồng thời lưu vết mã giao dịch từ đối tác (\texttt{order\_id}, \texttt{request\_id}).
+\end{itemize}
+
+\subsubsection{Chiến lược Đánh chỉ mục (Indexing Strategy)}
+Để tối ưu hóa hiệu suất truy vấn trên PostgreSQL cho một hệ thống mang tính chất đọc nhiều (read-heavy), các chiến lược Indexing sau được triển khai:
+\begin{itemize}
+    \item \textbf{Foreign Key Indexes (B-Tree):} Tạo chỉ mục B-Tree trên tất cả các cột khóa ngoại (\texttt{author\_id}, \texttt{comic\_id}, \texttt{user\_id} trong bảng purchases/subscriptions) để tăng tốc độ kết nối (JOIN) giữa các bảng.
+    \item \textbf{Unique Indexes:} Áp dụng cho cột \texttt{email} và \texttt{username} trong bảng \texttt{users} nhằm đảm bảo tính duy nhất và tăng tốc thao tác đăng nhập.
+    \item \textbf{Full-Text Search / Trigram Indexes:} Cân nhắc áp dụng chỉ mục GIN (Generalized Inverted Index) trên trường \texttt{title} của bảng \texttt{comics} để hỗ trợ tìm kiếm truyện theo từ khóa một cách nhanh chóng và chính xác.
+\end{itemize}
 
 \subsection{Backend Implementation (Node.js / Express / NestJS...)}
 % Cấu trúc thư mục, API design, authentication...
