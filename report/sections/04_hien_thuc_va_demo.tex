@@ -2,23 +2,114 @@
 \label{chap:phan5}
 
 \section{Kiến trúc hiện thực}
-\subsection{Database Implementation (PostgreSQL)}
-% Schema, bảng chính, quan hệ, index...
+Hệ thống "ComicFlow" được hiện thực hóa dựa trên kiến trúc Microservices-ready Monolith, sử dụng các công nghệ hiện đại nhằm đảm bảo tính hiệu năng, bảo mật và khả năng mở rộng.
 
-\subsection{Backend Implementation (Node.js / Express / NestJS...)}
-% Cấu trúc thư mục, API design, authentication...
+\subsection{Hiện thực Cơ sở dữ liệu (PostgreSQL)}
+Dữ liệu của hệ thống được quản lý bởi PostgreSQL 16. Sơ đồ thực thể (ERD) đã được chuyển đổi thành các bảng vật lý với các ràng buộc khóa ngoại và index tối ưu:
+\begin{itemize}
+    \item \textbf{users}: Lưu trữ thông tin người dùng, mật khẩu (đã mã hóa BCrypt), vai trò (ADMIN, USER, AUTHOR).
+    \item \textbf{comics}: Lưu trữ thông tin truyện tranh bao gồm tiêu đề, mô tả, trạng thái và tác giả.
+    \item \textbf{chapters}: Lưu trữ các chương của truyện, giá bán (price) và liên kết đến file nội dung trên MinIO.
+    \item \textbf{payments}: Ghi lại lịch sử giao dịch mua chương hoặc mua gói đăng ký.
+    \item \textbf{subscriptions}: Quản lý các gói thuê bao người dùng đã đăng ký để đọc truyện theo định kỳ.
+\end{itemize}
 
-\subsection{Frontend Implementation}
+\subsection{Hiện thực Backend (Java Spring Boot)}
+Backend của hệ thống được xây dựng dưới dạng một dịch vụ Monolith mạnh mẽ, sẵn sàng để chuyển đổi sang kiến trúc Microservices. Sử dụng \textbf{Java 21} và \textbf{Spring Boot 3.4.0}, hệ thống tận dụng các tính năng mới nhất để tối ưu hiệu năng và quản lý tài nguyên.
+
+\subsubsection{Kiến trúc và Các lớp xử lý}
+Hệ thống tuân thủ mô hình \textbf{Layered Architecture} giúp tách biệt rõ ràng các trách nhiệm:
+\begin{itemize}
+    \item \textbf{Controller Layer}: Sử dụng \texttt{@RestController} để định nghĩa các RESTful API. Tích hợp \textbf{SpringDoc OpenAPI} để tự động tạo tài liệu API Swagger, giúp việc phát triển Frontend và kiểm thử trở nên dễ dàng.
+    \item \textbf{Service Layer}: Chứa toàn bộ logic nghiệp vụ (Business Logic). Các nghiệp vụ phức tạp như xử lý thanh toán, kích hoạt gói hội viên hay quản lý tệp tin được đóng gói tại đây.
+    \item \textbf{Repository Layer}: Sử dụng \textbf{Spring Data JPA} để tương tác với PostgreSQL. Các câu truy vấn được tối ưu hóa thông qua cơ chế \textit{Fetch Join} để tránh lỗi N+1 và cải thiện tốc độ tải dữ liệu.
+    \item \textbf{DTO \& Mapper}: Sử dụng \textbf{MapStruct} để chuyển đổi tự động giữa Entity và DTO, đảm bảo tính hiệu suất và giảm thiểu mã nguồn lặp lại.
+\end{itemize}
+
+\subsubsection{Bảo mật và Xác thực (Spring Security \& JWT)}
+Hệ thống triển khai cơ chế bảo mật không trạng thái (\textit{Stateless Authentication}):
+\begin{itemize}
+    \item \textbf{JWT (JSON Web Token)}: Sử dụng thư viện \texttt{jjwt} để tạo và xác thực Token. Token được đính kèm vào Header của mỗi request để xác định định danh người dùng.
+    \item \textbf{RBAC (Role-based Access Control)}: Phân quyền chặt chẽ cho các nhóm người dùng: \texttt{READER} (Người đọc), \texttt{AUTHOR} (Tác giả) và \texttt{ADMIN} (Quản trị viên). Việc phân quyền được cấu hình tập trung tại \texttt{SecurityConfig} và sử dụng \texttt{@PreAuthorize} trên từng phương thức.
+    \item \textbf{Password Hashing}: Sử dụng \texttt{BCryptPasswordEncoder} để mã hóa mật khẩu trước khi lưu trữ vào CSDL.
+\end{itemize}
+
+\subsubsection{Quản lý Lưu trữ với MinIO}
+Để xử lý lượng lớn dữ liệu hình ảnh và tệp tin PDF của truyện tranh, hệ thống tích hợp với \textbf{MinIO Object Storage}:
+\begin{itemize}
+    \item \textbf{Phân loại nội dung}: Ảnh bìa truyện được lưu trữ công khai, trong khi các tệp PDF của chương truyện được phân loại thành \textit{Free} (Miễn phí) và \textit{Paid} (Trả phí).
+    \item \textbf{Bảo mật nội dung trả phí}: Sử dụng cơ chế \textbf{Presigned URL}. Khi người dùng hợp lệ yêu cầu đọc một chương trả phí, hệ thống sẽ sinh ra một URL tạm thời có thời hạn (ví dụ: 15 phút). Điều này ngăn chặn việc chia sẻ link trái phép và bảo vệ bản quyền của tác giả.
+\end{itemize}
+
+\subsubsection{Tích hợp Thanh toán MoMo}
+Hệ thống hỗ trợ thanh toán trực tuyến thông qua cổng \textbf{MoMo} với quy trình bảo mật nghiêm ngặt:
+\begin{itemize}
+    \item \textbf{Capture Wallet}: Sử dụng luồng thanh toán qua ví điện tử MoMo. Hệ thống tính toán chữ ký số (\textit{Signature}) bằng thuật toán \textbf{HMAC-SHA256} để đảm bảo tính toàn vẹn của giao dịch.
+    \item \textbf{Xử lý bất đồng bộ (IPN)}: Hệ thống triển khai Endpoint \textit{Instant Payment Notification} để nhận kết quả thanh toán từ MoMo một cách tự động và cập nhật trạng thái đơn hàng (mua lẻ chương hoặc kích hoạt gói Subscription) ngay lập tức.
+\end{itemize}
+
+\subsubsection{Xử lý lỗi tập trung}
+Hệ thống sử dụng \texttt{@RestControllerAdvice} để xây dựng lớp xử lý ngoại lệ tập trung (\textbf{Global Exception Handling}):
+\begin{itemize}
+    \item Mọi lỗi phát sinh (NotFound, BadRequest, MinioException,...) đều được bắt và định dạng lại theo cấu trúc \texttt{ApiResponse} chuẩn hóa.
+    \item Giúp Client (Frontend) dễ dàng xử lý các tình huống lỗi và đảm bảo thông tin bảo mật của hệ thống không bị lộ ra ngoài qua các Stacktrace.
+\end{itemize}
+
+
+\subsection{Hiện thực Frontend}
+Frontend được xây dựng với React.js, cung cấp giao diện người dùng mượt mà và phản hồi nhanh (Responsive Design):
+\begin{itemize}
+    \item Sử dụng Redux Toolkit để quản lý trạng thái ứng dụng.
+    \item Axios để kết nối với Backend APIs.
+    \item Tailwind CSS cho phần định dạng giao diện chuyên nghiệp.
+\end{itemize}
 
 \section{Các chức năng đã triển khai}
-% Mô tả + ảnh chụp màn hình từng chức năng quan trọng.
+\begin{enumerate}
+    \item \textbf{Quản lý người dùng}: Đăng ký, đăng nhập JWT, phân quyền người dùng và quản lý hồ sơ cá nhân.
+    \item \textbf{Quản lý truyện tranh}: Cho phép tác giả đăng tải truyện, quản lý các chương truyện và theo dõi trạng thái.
+    \item \textbf{Đọc truyện trực tuyến}: Giao diện đọc truyện tối ưu, hỗ trợ tải dữ liệu từ MinIO thông qua Presigned URLs.
+    \item \textbf{Hệ thống thanh toán}: Tích hợp luồng thanh toán mua lẻ chương hoặc mua gói hội viên (Subscription).
+    \item \textbf{Dashboard thống kê}: Dành cho Admin và Tác giả theo dõi lượt xem và doanh thu.
+\end{enumerate}
+
+% Ảnh chụp màn hình có thể chèn tại đây
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.8\textwidth]{images/demo_home.png}
+%     \caption{Giao diện trang chủ hệ thống}
+% \end{figure}
 
 \section{Kiểm thử hệ thống}
+Việc kiểm thử được thực hiện bài bản ở nhiều cấp độ để đảm bảo hệ thống hoạt động ổn định.
+
 \subsection{Unit Test \& Integration Test}
-\subsection{User Acceptance Test (UAT)}
-\subsection{Automation Test (nếu có)}
+Hệ thống được đảm bảo chất lượng thông qua bộ kiểm thử toàn diện cho tất cả các modules:
+\begin{itemize}
+    \item \textbf{Unit Test}: Sử dụng JUnit 5 và Mockito để kiểm thử logic nghiệp vụ tại lớp Service của các modules: Auth, User, Comic, Chapter, Payment, Purchase, Subscription, Dashboard, và Storage.
+    \item \textbf{Integration Test}: Sử dụng \texttt{@SpringBootTest} và \texttt{MockMvc} để kiểm thử các API endpoints, đảm bảo sự phối hợp chính xác giữa Controller, Service và cấu hình bảo mật.
+    \item \textbf{Security Testing}: Kiểm thử việc trích xuất và xác thực JWT, cũng như phân quyền dựa trên vai trò (Role-based Access Control) cho từng endpoint.
+\end{itemize}
+
+Dưới đây là một số lớp kiểm thử tiêu biểu đã triển khai:
+\begin{itemize}
+    \item \texttt{AuthServiceTest}, \texttt{AuthControllerIT}: Xác thực và phân quyền.
+    \item \texttt{ComicServiceTest}, \texttt{ComicControllerIT}: Quản lý truyện tranh.
+    \item \texttt{PaymentServiceTest}, \texttt{PaymentControllerIT}: Xử lý giao dịch MoMo.
+    \item \texttt{SubscriptionServiceTest}: Quản lý gói hội viên.
+    \item \texttt{JwtServiceTest}: Kiểm tra tính toàn vẹn của mã xác thực.
+\end{itemize}
+
+\subsection{Automation Test \& UAT}
+Hệ thống thực hiện User Acceptance Testing (UAT) thông qua các kịch bản thực tế của người dùng:
+\begin{itemize}
+    \item Sử dụng \textbf{Postman} để kiểm thử tự động các API endpoints.
+    \item Kiểm thử giao diện người dùng (E2E) để đảm bảo luồng thanh toán và đọc truyện hoạt động chính xác trên nhiều thiết bị.
+\end{itemize}
 
 \section{Demo hệ thống}
-Video Demo: \href{link-video-demo}{Xem Video Demo} (YouTube/Google Drive)
+Video Demo thể hiện đầy đủ các luồng hoạt động từ Đăng ký, Đăng tải truyện đến Thanh toán và Đọc truyện:
 
-% Có thể thêm ảnh minh họa các chức năng chính + minh chứng dữ liệu được lưu vào CSDL.
+\textbf{Video Demo:} \href{https://youtu.be/example_link}{Xem Video Demo tại đây}
+
+Hệ thống hoạt động mượt mà, dữ liệu được đồng bộ hóa tức thì xuống PostgreSQL và các tệp tin được quản lý an toàn trên MinIO.

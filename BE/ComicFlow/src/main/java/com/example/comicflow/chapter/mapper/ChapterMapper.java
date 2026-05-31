@@ -12,8 +12,10 @@ public interface ChapterMapper {
 
    @Mapping(target = "url", source = "pdfUrl")
    @Mapping(target = "comicId", source = "comic.id")
+   @Mapping(target = "unlocked", ignore = true)
    ChapterResponse toChapterResponse(Chapter chapter);
 
    @Mapping(target = "comicId", source = "chapter.comic.id")
+   @Mapping(target = "unlocked", ignore = true)
    ChapterResponse toChapterResponsePaid(Chapter chapter, String url);
 }

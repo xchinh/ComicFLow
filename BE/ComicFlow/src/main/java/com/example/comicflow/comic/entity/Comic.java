@@ -31,6 +31,9 @@ public class Comic extends BaseEntity {
 
     String coverImageUrl;
 
+    @Builder.Default
+    Long views = 0L;
+
     @Enumerated(EnumType.STRING)
     ComicStatus status;
 

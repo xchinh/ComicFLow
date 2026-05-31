@@ -25,11 +25,11 @@ public class Subscription {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "planId")
+    @JoinColumn(name = "plan_id")
     private SubscriptionPlan plan;
 
     private Integer usedChapters;

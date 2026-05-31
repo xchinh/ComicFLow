@@ -45,7 +45,7 @@ public class AuthService implements IAuthService {
 
         String accessToken = jwtService.generateToken(user.getEmail());
         String refreshToken = jwtService.generateRefreshToken(user.getEmail());
-        return new AuthResponse(accessToken, refreshToken);
+        return new AuthResponse(accessToken, refreshToken, user.getRole());
     }
 
     public AuthResponse login(LoginRequest request){
@@ -61,7 +61,7 @@ public class AuthService implements IAuthService {
 
         String accessToken = jwtService.generateToken(user.getEmail());
         String refreshToken = jwtService.generateRefreshToken(user.getEmail());
-        return new AuthResponse(accessToken, refreshToken);
+        return new AuthResponse(accessToken, refreshToken, user.getRole());
     }
 
     @Override

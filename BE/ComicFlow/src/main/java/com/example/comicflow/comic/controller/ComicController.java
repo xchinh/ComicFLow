@@ -3,13 +3,13 @@ package com.example.comicflow.comic.controller;
 import com.example.comicflow.comic.dto.request.ComicRequest;
 import com.example.comicflow.comic.dto.request.ComicUpdate;
 import com.example.comicflow.comic.dto.response.ComicResponse;
-import com.example.comicflow.comic.entity.Comic;
 import com.example.comicflow.comic.service.IComicService;
 import com.example.comicflow.common.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -20,10 +20,12 @@ import java.util.UUID;
 public class ComicController {
     private final IComicService comicService;
 
-    @PostMapping("/author/comics")
-    public ApiResponse<ComicResponse> createComic(@RequestBody @Valid ComicRequest request) {
-        ComicResponse response = comicService.create(request);
-
+    @PostMapping(value = "/author/comics", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<ComicResponse> createComic(
+            @RequestPart("comic") @Valid ComicRequest request,
+            @RequestPart(value = "coverImage", required = false) MultipartFile coverImage
+    ) {
+        ComicResponse response = comicService.create(request, coverImage);
         return ApiResponse.success("Comic created successfully", response);
     }
 

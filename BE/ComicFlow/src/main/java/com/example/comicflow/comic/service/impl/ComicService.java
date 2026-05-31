@@ -9,16 +9,15 @@ import com.example.comicflow.comic.repository.ComicRepository;
 import com.example.comicflow.comic.service.IComicService;
 import com.example.comicflow.common.exception.BadRequestException;
 import com.example.comicflow.common.exception.NotFoundException;
+import com.example.comicflow.storage.service.IMinioService;
 import com.example.comicflow.user.entity.User;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static com.example.comicflow.common.utils.Utils.getCurrentUser;
@@ -29,13 +28,21 @@ import static com.example.comicflow.common.utils.Utils.getCurrentUser;
 public class ComicService implements IComicService {
     private final ComicRepository comicRepository;
     private final ComicMapper comicMapper;
+    private final IMinioService minioService;
 
     @Override
-    public ComicResponse create(ComicRequest request) {
+    @Transactional
+    public ComicResponse create(ComicRequest request, MultipartFile coverImage) {
         User currentUser = getCurrentUser();
         log.info("ComicService:create:currentUser:{}", currentUser.getUsername());
         Comic comic = comicMapper.toComic(request, currentUser);
         Comic savedComic = comicRepository.save(comic);
+
+        if (coverImage != null && !coverImage.isEmpty()) {
+            String coverImageUrl = minioService.uploadCoverImage(savedComic.getId(), coverImage);
+            savedComic.setCoverImageUrl(coverImageUrl);
+            savedComic = comicRepository.save(savedComic);
+        }
 
         return comicMapper.toComicResponse(savedComic);
     }

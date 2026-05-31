@@ -16,6 +16,8 @@ public class ChapterResponse {
 
     Integer price;
 
+    Boolean unlocked;
+
     String url;
 
     UUID comicId;

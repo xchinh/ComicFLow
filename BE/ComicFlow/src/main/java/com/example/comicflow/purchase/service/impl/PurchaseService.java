@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.example.comicflow.common.utils.Utils.getCurrentUser;
 
@@ -34,7 +35,7 @@ public class PurchaseService implements com.example.comicflow.purchase.service.I
                 .user(user)
                 .chapter(chapter)
                 .accessChapterType(AccessChapterType.DIRECT_PURCHASE)
-                .amount(chapter.getPrice())
+                .amount(chapter.getPrice().longValue())
                 .build();
 
         purchaseRepository.save(purchase);
@@ -85,5 +86,14 @@ public class PurchaseService implements com.example.comicflow.purchase.service.I
     public Purchase getPurchase(User user, Chapter chapter) {
         return purchaseRepository.findByUserAndChapter(user, chapter)
                 .orElse(null);
+    }
+
+    @Override
+    public List<UUID> getPurchasedChapterIds() {
+        User user = getCurrentUser();
+        return purchaseRepository.findByUserId(user.getId())
+                .stream()
+                .map(purchase -> purchase.getChapter().getId())
+                .toList();
     }
 }

@@ -6,6 +6,7 @@ import com.example.comicflow.common.exception.BadRequestException;
 import com.example.comicflow.common.exception.NotFoundException;
 import com.example.comicflow.payment.dto.request.MomoIpnRequest;
 import com.example.comicflow.payment.dto.response.MomoCreatePayment;
+import com.example.comicflow.payment.dto.response.PaymentResponse;
 import com.example.comicflow.payment.entity.Payment;
 import com.example.comicflow.payment.enums.PaymentStatus;
 import com.example.comicflow.payment.enums.PaymentTargetType;
@@ -15,7 +16,6 @@ import com.example.comicflow.purchase.service.IPurchaseService;
 import com.example.comicflow.subscription.entity.SubscriptionPlan;
 import com.example.comicflow.subscription.service.ISubscriptionService;
 import com.example.comicflow.user.entity.User;
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -249,5 +249,31 @@ public class PaymentService implements IPaymentService {
         body.put("signature", signature);
 
         return body;
+    }
+
+    @Override
+    public List<PaymentResponse> getPaymentHistory() {
+        User user = getCurrentUser();
+        List<Payment> payments = paymentRepository.findByUserIdWithJoin(user.getId());
+
+        return payments.stream().map(payment -> {
+            String targetName = "";
+            if (payment.getTargetType() == PaymentTargetType.CHAPTER && payment.getChapter() != null) {
+                targetName = "Chapter " + payment.getChapter().getChapterNumber();
+            } else if (payment.getTargetType() == PaymentTargetType.SUBSCRIPTION && payment.getSubscriptionPlan() != null) {
+                targetName = payment.getSubscriptionPlan().getName();
+            }
+
+            return PaymentResponse.builder()
+                    .id(payment.getId())
+                    .orderId(payment.getOrderId())
+                    .amount(payment.getAmount())
+                    .status(payment.getStatus())
+                    .paymentMethod(payment.getPaymentMethod())
+                    .targetType(payment.getTargetType())
+                    .targetName(targetName)
+                    .createdAt(payment.getCreatedAt())
+                    .build();
+        }).toList();
     }
 }

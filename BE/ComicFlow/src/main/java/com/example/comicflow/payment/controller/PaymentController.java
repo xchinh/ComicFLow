@@ -3,11 +3,13 @@ package com.example.comicflow.payment.controller;
 import com.example.comicflow.common.response.ApiResponse;
 import com.example.comicflow.payment.dto.request.MomoIpnRequest;
 import com.example.comicflow.payment.dto.response.MomoCreatePayment;
+import com.example.comicflow.payment.dto.response.PaymentResponse;
 import com.example.comicflow.payment.service.IPaymentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -35,6 +37,12 @@ public class PaymentController {
     @PostMapping("/momo/ipn")
     public void momoIpn(@RequestBody MomoIpnRequest ipnRequest) {
         paymentService.handleIpn(ipnRequest);
+    }
+
+    @GetMapping("/history")
+    public ApiResponse<List<PaymentResponse>> getPaymentHistory() {
+        List<PaymentResponse> history = paymentService.getPaymentHistory();
+        return ApiResponse.success("Payment history fetched successfully", history);
     }
 
 }

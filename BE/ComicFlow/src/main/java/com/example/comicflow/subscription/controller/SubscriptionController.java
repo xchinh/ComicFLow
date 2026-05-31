@@ -3,6 +3,7 @@ package com.example.comicflow.subscription.controller;
 import com.example.comicflow.common.response.ApiResponse;
 import com.example.comicflow.subscription.dto.response.CreateSubscription;
 import com.example.comicflow.subscription.dto.response.SubscriptionPlanResponse;
+import com.example.comicflow.subscription.dto.response.UserSubscriptionResponse;
 import com.example.comicflow.subscription.service.ISubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,12 @@ public class SubscriptionController {
     public ApiResponse<List<SubscriptionPlanResponse>> getPlans() {
         List<SubscriptionPlanResponse> subscriptionPlans = subscriptionService.getPlans();
         return ApiResponse.success("Plans fetched successfully", subscriptionPlans);
+    }
+
+    @GetMapping("/me")
+    public ApiResponse<UserSubscriptionResponse> getMySubscription() {
+        UserSubscriptionResponse userSubscription = subscriptionService.getMySubscription();
+        return ApiResponse.success("User subscription fetched successfully", userSubscription);
     }
 
 }

@@ -12,6 +12,8 @@ import com.example.comicflow.common.exception.BadRequestException;
 import com.example.comicflow.common.exception.NotFoundException;
 import com.example.comicflow.purchase.service.IPurchaseService;
 import com.example.comicflow.storage.service.IMinioService;
+import com.example.comicflow.subscription.entity.Subscription;
+import com.example.comicflow.subscription.service.ISubscriptionService;
 import com.example.comicflow.user.entity.User;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -30,6 +32,7 @@ public class ChapterService implements IChapterService {
     private final IComicService comicService;
     private final IMinioService minioService;
     private final IPurchaseService purchaseService;
+    private final ISubscriptionService subscriptionService;
 
     @Override
     @Transactional
@@ -37,7 +40,7 @@ public class ChapterService implements IChapterService {
         User author = getCurrentUser();
         Comic comic = comicService.findById(request.getComicId());
 
-        if (!comic.getAuthor().equals(author)) {
+        if (comic.getAuthor() == null || !comic.getAuthor().getId().equals(author.getId())) {
             throw new BadRequestException("You are not author of this comic");
         }
 
@@ -54,11 +57,22 @@ public class ChapterService implements IChapterService {
 
     @Override
     public List<ChapterResponse> getChapterByComic(UUID comicId) {
+        User user = getCurrentUser();
         Comic comic = comicService.findById(comicId);
+
+        Subscription subscription = subscriptionService.getActiveSubscriptionOptional(user).orElse(null);
+        boolean hasPremium = subscription != null && subscriptionService.canAccessMoreChapters(subscription);
 
         return chapterRepository.findByComicIdOrderByChapterNumberAsc(comic.getId())
                 .stream()
-                .map(chapterMapper::toChapterResponse)
+                .map(chapter -> {
+                    ChapterResponse response = chapterMapper.toChapterResponse(chapter);
+                    boolean isUnlocked = chapter.isFree() ||
+                            hasPremium ||
+                            purchaseService.hasAccess(user, chapter);
+                    response.setUnlocked(isUnlocked);
+                    return response;
+                })
                 .toList();
     }
 
@@ -69,14 +83,19 @@ public class ChapterService implements IChapterService {
                 .orElseThrow(() -> new NotFoundException("Chapter not found"));
 
         if  (chapter.isFree()) {
-            return chapterMapper.toChapterResponse(chapter);
+            ChapterResponse response = chapterMapper.toChapterResponse(chapter);
+            response.setUnlocked(true);
+            return response;
         }
         boolean hasAccess = purchaseService.hasAccess(user, chapter);
         if (!hasAccess) {
             purchaseService.unlockViaSubscription(user, chapter);
+            hasAccess = true;
         }
         String url = minioService.getPaidChapterUrl(chapter.getPdfUrl());
-        return chapterMapper.toChapterResponsePaid(chapter, url);
+        ChapterResponse response = chapterMapper.toChapterResponsePaid(chapter, url);
+        response.setUnlocked(hasAccess);
+        return response;
     }
 
     @Override

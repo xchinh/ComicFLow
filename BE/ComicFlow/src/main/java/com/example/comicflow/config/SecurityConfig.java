@@ -44,8 +44,11 @@ public class SecurityConfig {
                         .requestMatchers("/author/**")
                         .hasAnyRole("AUTHOR", "ADMIN")
                         // Admin APIS
-                        .requestMatchers("/admin/**")
+                        .requestMatchers("/admin/**", "/dashboard/admin/**")
                         .hasAnyRole("ADMIN")
+                        // Dashboard Author
+                        .requestMatchers("/dashboard/author/**")
+                        .hasAnyRole("AUTHOR", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
