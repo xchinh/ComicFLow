@@ -1,11 +1,9 @@
 \chapter{Thiết kế Giao diện và Hạ tầng Hệ thống}
 \label{chap:phan4}
 
-\section{Use Case và Yêu cầu chức năng}
-% Use Case Diagram + mô tả chi tiết các use case chính.
-
+\section{Use Case và Yêu cầu chức năng} % Use Case Diagram + mô tả chi tiết các use case chính.
 \subsection{Biểu đồ Use Case tổng thể}
-Hệ thống Nền tảng Xây dựng và Mua bán Truyện tranh số được thiết kế với 4 nhóm tác nhân (actor) chính tham gia vào các module cốt lõi của nền tảng, bao gồm:
+Biểu đồ Use Case tổng thể của hệ thống Nền tảng Xây dựng và Mua bán Truyện tranh số được thể hiện ở Hình \ref{fig:usecase_tongthe}, được thiết kế với 4 nhóm tác nhân (actor) chính tham gia vào các module cốt lõi của nền tảng, bao gồm:
 \begin{itemize}
     \item \textbf{Người dùng khách:} Tương tác chủ yếu với Module Đăng nhập/Đăng xuất để thực hiện đăng nhập và đăng ký tài khoản.
     \item \textbf{Độc giả:} Người sử dụng hệ thống để đọc truyện, mua các chương truyện trả phí và tương tác, đánh giá tác phẩm.
@@ -118,7 +116,7 @@ Hệ thống nền tảng truyện tranh số được thiết kế theo kiến 
     \label{fig:system_architecture}
 \end{figure}
 
-Dựa vào biểu đồ kiến trúc, hệ thống được cấu thành từ 4 lớp chính và 1 khối dịch vụ bên ngoài:
+Dựa vào biểu đồ kiến trúc ở Hình \ref{fig:system_architecture}, hệ thống được cấu thành từ 4 lớp chính và 1 khối dịch vụ bên ngoài:
 
 \subsubsection{Tầng Client (Client Layer - ReactJS Web Application)}
 Tầng này đóng vai trò là giao diện tiếp xúc trực tiếp với người dùng, được xây dựng hoàn toàn dưới dạng Ứng dụng Web Single Page Application (SPA) sử dụng \textbf{ReactJS}. Tầng này được chia thành 3 nhóm giao diện chuyên biệt:
@@ -201,5 +199,63 @@ Dựa trên yêu cầu và thiết kế kiến trúc tổng thể, hệ thống 
     \item \textbf{Chức năng chính:} Redis hoạt động như một hệ thống lưu trữ in-memory phục vụ hai vai trò cốt lõi là quản lý phiên làm việc (sessions) của người dùng và lưu trữ dữ liệu đệm (cache). Cụ thể, hệ thống sử dụng Redis để duy trì trạng thái phiên đăng nhập, lưu trữ danh sách truyện thịnh hành ("Hot Comics"), và cache siêu dữ liệu (metadata) của những bộ truyện có lượt xem cao nhằm phục vụ nhanh các truy vấn thường xuyên và giảm tải hệ thống đáng kể.
 \end{itemize}
 
-\subsection{Thiết kế CSDL (ER Diagram)}
-\subsection{Tính mở rộng và Scalability}
+\subsection{Thiết kế Cơ sở dữ liệu (ER Diagram)}
+
+Biểu đồ Thực thể - Mối kết hợp (ERD - Entity Relationship Diagram) ở Hình \ref{fig:erd} mô tả cấu trúc dữ liệu tổng thể của nền tảng. Các thực thể và mối quan hệ được thiết kế tối ưu để phục vụ cho các luồng nghiệp vụ cốt lõi: đọc truyện, quản lý người dùng, tương tác cộng đồng và đặc biệt là hệ thống thanh toán vi mô (micro-transaction). Dựa theo ERD, có thể phân nhóm các thực thể thành 4 nhóm chính.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/Diagram/TMĐT-erd.png}
+    \caption{Biểu đồ Thực thể - Mối kết hợp (ERD) của hệ thống}
+    \label{fig:erd}
+\end{figure}
+
+\subsubsection{Nhóm Quản lý Người dùng (User)}
+\begin{itemize}
+    \item \textbf{\texttt{User}:} Bảng trung tâm lưu trữ thông tin tài khoản của tất cả người dùng trên hệ thống (bao gồm các thuộc tính: \textit{id, username, password, email, role, status, created\_at}). Trường \texttt{role} đóng vai trò quan trọng trong việc phân quyền RBAC (Role-Based Access Control) giữa Độc giả, Tác giả và Quản trị viên (Admin).
+\end{itemize}
+
+\subsubsection{Nhóm Quản lý Nội dung (Comic \& Chapter)}
+\begin{itemize}
+    \item \textbf{\texttt{Comic}:} Lưu trữ thông tin tổng quan của một bộ truyện (\textit{id, title, description, cover\_url, price\_type, status}). Thực thể này có liên kết tới tài khoản sáng tác thông qua trường \texttt{author\_id}.
+    \item \textbf{\texttt{Chapter}:} Chi tiết các chương thuộc một bộ truyện (\textit{chapter\_number, title, isFree, price}). Một \texttt{Comic} có mối quan hệ 1-N (Một - Nhiều) với \texttt{Chapter}. Thuộc tính \texttt{isFree} (True/False) kết hợp với \texttt{price} giúp hệ thống xác định nhanh chóng các chương đọc miễn phí và các chương bị khóa (paywall) cần trả phí.
+\end{itemize}
+
+\subsubsection{Nhóm Giao dịch \& Doanh thu (Order \& Subscription)}
+Nhóm này được thiết kế linh hoạt để hỗ trợ cùng lúc hai mô hình kinh doanh cốt lõi (Mua lẻ và Đăng ký gói):
+\begin{itemize}
+    \item \textbf{\texttt{Subscription\_Plan} \& \textbf{\texttt{User\_Subscription}}:} Quản lý các gói hội viên (Premium). \texttt{Subscription\_Plan} lưu thông tin gói (\textit{Name, Price, Duration\_days}), trong khi \texttt{User\_Subscription} là bảng trung gian ghi nhận thời hạn sử dụng của người dùng (\textit{start\_date, end\_date, status}).
+    \item \textbf{\texttt{Payment\_gate}:} Danh mục các cổng thanh toán tích hợp (ví dụ: MoMo, ZaloPay, v.v.) và mức phí giao dịch (\textit{fee}).
+    \item \textbf{\texttt{Order} \& \textbf{\texttt{Order\_detail}}:} Quản lý hóa đơn. Một giao dịch (\texttt{Order}) được gắn với một \texttt{User} và một \texttt{Payment\_gate}. Chi tiết giao dịch (\texttt{Order\_detail}) sẽ trỏ khóa ngoại tới \texttt{chapter\_id} (nếu người dùng mua lẻ chương) hoặc \texttt{plan\_id} (nếu người dùng mua gói Premium), kèm theo giá tiền (\textit{price}) tại thời điểm mua để đảm bảo tính nhất quán của dữ liệu tài chính.
+\end{itemize}
+
+\subsubsection{Nhóm Tương tác Cộng đồng (Comment \& Rating)}
+\begin{itemize}
+    \item \textbf{\texttt{Rating}:} Bảng trung gian thể hiện mối quan hệ nhiều-nhiều (N - N) giữa \texttt{User} và \texttt{Comic}. Mỗi bản ghi lưu trữ điểm số (\textit{rating}) mà một người dùng đánh giá cho một bộ truyện cụ thể.
+    \item \textbf{\texttt{Comment}:} Lưu trữ bình luận của người dùng (\textit{content, created\_at}). Thiết kế hỗ trợ khóa ngoại trỏ tới cả \texttt{comic\_id} và \texttt{chapter\_id}, cho phép độc giả linh hoạt bình luận cho tổng thể toàn bộ truyện hoặc thảo luận chi tiết theo từng chương riêng biệt.
+\end{itemize}
+
+\subsection{Khả năng mở rộng (Scalability)}
+
+Để đảm bảo hệ thống vận hành ổn định và giữ vững hiệu năng khi số lượng độc giả và tác giả tăng trưởng đột biến, kiến trúc nền tảng được thiết kế tối ưu cho khả năng mở rộng linh hoạt ở cả tầng xử lý nghiệp vụ, tầng lưu trữ tài nguyên tĩnh và tầng cơ sở dữ liệu. Khả năng mở rộng của hệ thống được xây dựng dựa trên các trụ cột công nghệ cốt lõi sau:
+
+\subsubsection{Mở rộng tầng lưu trữ tài nguyên tĩnh (Media Storage Scalability)}
+Đối với một nền tảng truyện tranh số, hình ảnh của từng trang truyện là loại tài nguyên chiếm dung lượng lớn nhất và yêu cầu băng thông phân phối cực cao. Việc sử dụng hệ thống lưu trữ hướng đối tượng giải quyết bài toán mở rộng này một cách triệt để:
+\begin{itemize}
+    \item \textbf{Tách rời tài nguyên:} Hệ thống sử dụng \texttt{MinIO Object Storage} làm kho lưu trữ chuyên dụng thay vì lưu trực tiếp trong cơ sở dữ liệu quan hệ hoặc ổ đĩa cục bộ của server backend. Thiết kế này cho phép hệ thống phục vụ hàng triệu tệp tin hình ảnh trang truyện mà không làm ảnh hưởng đến hiệu suất xử lý logic nghiệp vụ.
+    \item \textbf{Sẵn sàng dịch chuyển lên Cloud:} Nhờ việc hỗ trợ hoàn toàn chuẩn S3 API, hệ thống sở hữu khả năng mở rộng quy mô không giới hạn. Khi lượng truy cập vượt quá khả năng chịu tải của hạ tầng tại chỗ (on-premise), nền tảng có thể chuyển dịch dễ dàng sang các dịch vụ đám mây lớn như AWS S3 hoặc Google Cloud Storage mà không cần phải thay đổi cấu trúc mã nguồn cốt lõi.
+\end{itemize}
+
+\subsubsection{Mở rộng và giảm tải tầng dữ liệu (Database Scalability \& Caching)}
+Cơ sở dữ liệu thường là điểm nghẽn hệ thống (bottleneck) lớn nhất khi ứng dụng mở rộng. Hệ thống khắc phục bằng cách phân tách luồng xử lý và áp dụng bộ nhớ đệm tốc độ cao:
+\begin{itemize}
+    \item \textbf{PostgreSQL Replication:} Hệ quản trị cơ sở dữ liệu PostgreSQL được cấu hình sẵn sàng cho cơ chế sao lưu dữ liệu theo mô hình Master-Slave. Mọi tác vụ ghi dữ liệu đòi hỏi tính nhất quán cao như giao dịch tài chính (mua chương, nạp xu) sẽ được xử lý tại nút Master để đảm bảo tính nghiêm ngặt của ACID. Trong khi đó, các tác vụ đọc dữ liệu nặng (truy vấn danh mục truyện, thông tin chương) sẽ được phân tải (load balancing) ra các nút Slave, giúp hệ thống mở rộng khả năng đáp ứng đồng thời cho hàng vạn độc giả cùng lúc.
+    \item \textbf{Redis In-Memory Caching:} Hệ thống sử dụng Redis để lưu trữ trạng thái phiên làm việc (sessions) của người dùng và phục vụ trực tiếp các truy vấn dữ liệu phổ biến. Việc cache danh sách truyện thịnh hành ("Hot Comics") và siêu dữ liệu (metadata) của các bộ truyện có lượt xem cao giúp giảm tải tối đa số lượng request phải truy vấn trực tiếp xuống Database chính, từ đó giải phóng tài nguyên để PostgreSQL xử lý các luồng giao dịch cốt lõi một cách mượt mà.
+\end{itemize}
+
+\subsubsection{Mở rộng cấu trúc mã nguồn Backend (Architectural Scalability)}
+Hệ thống lựa chọn hướng tiếp cận backend theo kiến trúc \textbf{Modular Monolith} nhằm tối ưu hóa khả năng phát triển và mở rộng mã nguồn theo thời gian:
+\begin{itemize}
+    \item \textbf{Tính cô lập cao:} Mã nguồn được phân chia thành các module chức năng có ranh giới rõ ràng (Auth \& User, Comic \& Chapter, Purchase, Comment). Điều này cho phép đội ngũ kỹ thuật nhỏ dễ dàng phát triển song song các tính năng mới mà không gây ảnh hưởng chéo hoặc làm xung đột mã nguồn hệ thống.
+    \item \textbf{Định hướng phát triển thành Microservices:} Ở giai đoạn đầu của dự án, kiến trúc Modular Monolith giúp tối ưu hóa chi phí vận hành và hạ tầng mạng cơ bản. Tuy nhiên, khi hệ thống tăng trưởng đến một quy mô cực lớn và một số module cụ thể (như Module Chapter phục vụ luồng đọc hoặc Module Purchase phục vụ thanh toán vi mô) bị quá tải, thiết kế dạng modular cho phép đội ngũ kỹ thuật dễ dàng bóc tách riêng module đó ra thành một dịch vụ Microservice độc lập. Dịch vụ này sau đó có thể được container hóa (ví dụ: sử dụng Docker/Kubernetes) để mở rộng theo chiều ngang (Horizontal Scaling) một cách nhanh chóng mà không cần phải đập đi xây lại toàn bộ hệ thống.
+\end{itemize}
