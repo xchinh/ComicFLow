@@ -98,11 +98,278 @@ Biểu đồ Use Case tổng thể của hệ thống Nền tảng Xây dựng v
 \end{itemize}
 
 \section{Thiết kế UI/UX}
+\label{sec:uiux}
+
+Phần UI/UX của nền tảng được thiết kế trên Figma và đã được triển khai thành prototype web. Trong bộ mockup, tên hiển thị trên giao diện là \textbf{InkVerse}; đây là tên prototype/brand UI tương ứng với hệ thống thương mại truyện tranh số \textbf{ComicFlow} đang được mô tả trong báo cáo. Việc sử dụng mockup thật giúp phần thiết kế không dừng ở mô tả ý tưởng, mà thể hiện được rõ luồng người dùng, bố cục màn hình, màu sắc, cách đặt CTA và cách hệ thống xử lý các vai trò khác nhau như độc giả, tác giả và quản trị viên.
+
+Bộ prototype có hai nguồn tham khảo chính:
+
+\begin{itemize}
+    \item Link publish prototype: \url{https://dill-git-10102841.figma.site}
+    \item Link file thiết kế Figma: \url{https://figma.com/make/hWU5734O428M0djxKt6gye/E-commerce-Comic-Platform-UI-UX}
+\end{itemize}
+
+Về định hướng trải nghiệm, ComicFlow chọn mô hình \textit{reader-first commerce}: thương mại được tích hợp vào hành trình đọc nhưng không làm gián đoạn cảm xúc thưởng thức nội dung. Người dùng mới có thể khám phá truyện, xem chi tiết và đọc thử trước khi đăng nhập; người dùng đã đăng nhập có thể lưu thư viện, nạp ví, mua chương hoặc đăng ký Premium; tác giả có dashboard riêng để đăng tải nội dung và theo dõi hiệu quả. Cách tổ chức này phù hợp với kết quả khảo sát ở Chương~\ref{chap:phan1_phan2}, trong đó người dùng quan tâm đến tốc độ tải ảnh, lưu tiến trình đọc, bình luận theo chương, tương tác với tác giả và mức giá minh bạch.
+
 \subsection{Brand Identity và Nguyên tắc thiết kế}
-% Màu sắc, font chữ, tone & manner, nguyên tắc thiết kế (Material Design, Atomic Design...).
+
+Bộ nhận diện của ComicFlow/InkVerse được xây dựng theo phong cách \textit{modern fantasy digital platform}: nền tối, sắc tím chủ đạo, hiệu ứng phát sáng nhẹ và hệ thống card truyện nổi bật. Phong cách này phù hợp với sản phẩm truyện tranh số vì tạo cảm giác giải trí, trẻ trung và có tính cộng đồng, đồng thời vẫn đủ hiện đại để hỗ trợ các tác vụ thương mại như thanh toán, ví điện tử và gói Premium.
+
+\begin{table}[H]
+\centering
+\caption{Định hướng brand identity thể hiện trong mockup}
+\label{tab:comicflow-brand-identity-real}
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{tabular}{|L{3.0cm}|L{4.3cm}|L{6.4cm}|}
+\hline
+\textbf{Thành phần} & \textbf{Thể hiện trong mockup} & \textbf{Vai trò trong trải nghiệm} \\
+\hline
+Màu chủ đạo
+& Nền tím đậm / gần đen, kết hợp gradient tím
+& Tạo không gian đọc có chiều sâu, giúp ảnh bìa truyện và các thẻ nội dung nổi bật hơn. Nền tối cũng phù hợp với thói quen đọc nội dung giải trí trong thời gian dài. \\
+\hline
+Màu nhấn
+& Tím sáng, hồng tím, xanh cyan và vàng cho trạng thái Premium
+& Dùng để nhấn CTA, tab đang chọn, thông báo, trạng thái ví và quyền lợi trả phí. Việc phân biệt màu giúp người dùng nhận ra nhanh hành động chính trên từng màn hình. \\
+\hline
+Typography
+& Sans-serif hiện đại, chữ lớn ở hero, chữ nhỏ gọn trong card
+& Bảo đảm phân cấp thông tin rõ: tiêu đề truyện, tác giả, tag thể loại, lượt xem, lượt thích và trạng thái sở hữu được đọc nhanh trong một lần quét mắt. \\
+\hline
+Hình ảnh
+& Ảnh bìa truyện đặt trong card, hero có visual lớn
+& Vì truyện tranh là sản phẩm thị giác, ảnh bìa là yếu tố kéo người dùng vào nội dung. Mockup ưu tiên card ảnh lớn thay vì mô tả chữ dài. \\
+\hline
+Ngôn ngữ giao diện
+& Ngắn gọn, hành động rõ: Khám phá, Đọc thử, Premium, Ví, Thư viện
+& Giảm thời gian học cách dùng hệ thống. Người dùng hiểu ngay mình đang khám phá, đọc, mua, quản lý thư viện hay quản lý tác phẩm. \\
+\hline
+\end{tabular}
+\end{table}
+
+Các nguyên tắc thiết kế chính được thể hiện trong mockup gồm:
+
+\begin{itemize}
+    \item \textbf{Content-first}: Ảnh bìa, tên truyện, tác giả, thể loại và chỉ số tương tác được đưa lên trước. Các yếu tố phụ như mô tả dài hoặc bình luận được đặt phía sau để không làm nặng màn hình khám phá.
+    \item \textbf{CTA rõ ràng theo từng giai đoạn}: Ở trang chủ, CTA là khám phá truyện; ở trang chi tiết, CTA là đọc hoặc mua chương; ở màn hình Premium, CTA là chọn gói; ở dashboard tác giả, CTA là đăng truyện hoặc upload chương.
+    \item \textbf{Tách vai trò người dùng}: Độc giả, tác giả và admin có giao diện riêng. Điều này giúp mỗi nhóm tập trung vào tác vụ chính của mình, tránh làm một giao diện quá nhiều chức năng.
+    \item \textbf{Minh bạch thương mại}: Các màn hình ví, mua chương, thanh toán và Premium hiển thị rõ số dư, giá, quyền lợi và trạng thái giao dịch. Đây là điểm quan trọng để giảm nghi ngại khi người dùng chuyển từ đọc miễn phí sang trả phí.
+    \item \textbf{Cộng đồng và tương tác}: Trang chi tiết truyện, blog, profile tác giả và bình luận theo chương tạo cảm giác nền tảng không chỉ là nơi đọc truyện, mà còn là nơi kết nối giữa độc giả và người sáng tạo.
+\end{itemize}
 
 \subsection{Mockup \& Wireframe các màn hình chính}
-% Chèn nhiều hình ảnh UI/UX + giải thích luồng người dùng.
+
+Bộ mockup được tổ chức theo bốn nhóm màn hình: nhóm công khai cho người dùng mới, nhóm độc giả đã đăng nhập, nhóm tác giả và nhóm quản trị. Cách chia này phản ánh đúng hành trình sản phẩm từ khám phá nội dung, đọc truyện, thanh toán, quản lý thư viện, xuất bản tác phẩm đến vận hành nền tảng.
+
+\begin{table}[H]
+\centering
+\caption{Danh sách nhóm màn hình mockup và vai trò UX}
+\label{tab:comicflow-main-screens-real}
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{tabular}{|L{3.0cm}|L{4.0cm}|L{6.8cm}|}
+\hline
+\textbf{Nhóm màn hình} & \textbf{Màn hình chính} & \textbf{Vai trò trong hành trình người dùng} \\
+\hline
+Public / Guest
+& Home, Explore, Comic Detail, Blog, Premium, Login
+& Thu hút người dùng mới, giúp khám phá kho truyện, xem chi tiết tác phẩm, đọc nội dung cộng đồng và chuyển đổi sang đăng nhập hoặc gói trả phí. \\
+\hline
+Reader
+& Read Chapter, Buy Comic, Payment, Library, Wallet, Profile
+& Phục vụ hành vi đọc, mua chương, thanh toán, nạp ví, lưu truyện và quản lý thông tin cá nhân của độc giả. \\
+\hline
+Author
+& Dashboard, Upload, Publish, Profile, Write Blog
+& Hỗ trợ tác giả quản lý tác phẩm, đăng chương, xuất bản nội dung, viết blog và theo dõi hiệu quả hoạt động. \\
+\hline
+Admin
+& Admin Dashboard, Settings
+& Hỗ trợ quản trị nền tảng, theo dõi chỉ số vận hành, kiểm soát hệ thống, cấu hình chính sách và quản lý trạng thái nền tảng. \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Nhóm màn hình Public / Guest}
+
+Nhóm màn hình công khai là điểm chạm đầu tiên của người dùng mới. Trang chủ tập trung vào hero section, danh mục truyện, truyện đang thịnh hành, truyện mới cập nhật và creator nổi bật. Trang Explore mở rộng khả năng tìm kiếm bằng bộ lọc, thể loại và danh sách truyện. Trang Comic Detail đóng vai trò như trang bán hàng cho từng tác phẩm: người dùng thấy được ảnh bìa, tác giả, thể loại, mô tả, danh sách chương, bình luận và truyện liên quan.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.31\textheight,keepaspectratio]{images/Mockups/home.jpg}
+    \scriptsize Home
+\end{minipage}\hfill
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.31\textheight,keepaspectratio]{images/Mockups/explore.jpg}
+    \scriptsize Explore
+\end{minipage}\hfill
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.31\textheight,keepaspectratio]{images/Mockups/comic_detail.jpg}
+    \scriptsize Comic Detail
+\end{minipage}
+\caption{Mockup nhóm màn hình khám phá và chi tiết truyện}
+\label{fig:mockup-public-discovery}
+\end{figure}
+
+Bố cục của nhóm màn hình này đi theo logic phễu: \textbf{Home} tạo cảm hứng, \textbf{Explore} giúp lọc và tìm truyện, còn \textbf{Comic Detail} cung cấp đủ thông tin để người dùng quyết định đọc thử, theo dõi hoặc mua chương. Điểm tốt của mockup là dùng nhiều card truyện nhất quán, có tag thể loại, chỉ số rating, lượt xem và lượt tương tác. Điều này giúp người dùng đánh giá nhanh mức hấp dẫn của truyện mà không cần vào từng trang chi tiết.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.29\textheight,keepaspectratio]{images/Mockups/blog.jpg}
+    \scriptsize Blog cộng đồng
+\end{minipage}\hfill
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.29\textheight,keepaspectratio]{images/Mockups/premium.jpg}
+    \scriptsize Premium
+\end{minipage}\hfill
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.29\textheight,keepaspectratio]{images/Mockups/login.jpg}
+    \scriptsize Login
+\end{minipage}
+\caption{Mockup nhóm màn hình cộng đồng, gói trả phí và đăng nhập}
+\label{fig:mockup-public-conversion}
+\end{figure}
+
+Màn hình Blog giúp nền tảng có thêm lớp nội dung cộng đồng thay vì chỉ là nơi đọc truyện. Màn hình Premium trình bày các gói quyền lợi theo card, giúp người dùng so sánh nhanh giữa các lựa chọn. Màn hình Login được thiết kế dạng form ngắn, nền tối đồng bộ với toàn hệ thống, phù hợp với nguyên tắc giảm ma sát khi chuyển đổi.
+
+\subsubsection{Nhóm màn hình Reader}
+
+Nhóm Reader tập trung vào các tác vụ sau khi người dùng đã có tài khoản: đọc chương, mua chương, thanh toán, quản lý thư viện, theo dõi ví và chỉnh sửa hồ sơ. Đây là nhóm màn hình ảnh hưởng trực tiếp đến retention và doanh thu, vì trải nghiệm đọc không tốt hoặc thanh toán không rõ ràng sẽ làm người dùng rời bỏ rất nhanh.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.25\textheight,keepaspectratio]{images/Mockups/reader_read_chapter.jpg}
+    \scriptsize Read Chapter
+\end{minipage}\hfill
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.25\textheight,keepaspectratio]{images/Mockups/reader_buy_comic.jpg}
+    \scriptsize Buy Comic
+\end{minipage}\hfill
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.25\textheight,keepaspectratio]{images/Mockups/reader_payment.jpg}
+    \scriptsize Payment
+\end{minipage}
+\caption{Mockup luồng đọc truyện, mua chương và thanh toán}
+\label{fig:mockup-reader-payment}
+\end{figure}
+
+Màn hình đọc chương được tối giản để nội dung truyện là trung tâm. Các thao tác phụ như điều hướng chương, mở menu, mua chương hoặc quay lại được đặt xung quanh vùng đọc. Modal Buy Comic hiển thị thông tin giao dịch ngay tại ngữ cảnh đọc, giúp người dùng không bị kéo ra khỏi trải nghiệm chính. Màn hình Payment tiếp tục luồng mua với thông tin số tiền và trạng thái xác nhận rõ ràng.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.31\textheight,keepaspectratio]{images/Mockups/reader_library.jpg}
+    \scriptsize Library
+\end{minipage}\hfill
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.31\textheight,keepaspectratio]{images/Mockups/reader_wallet.jpg}
+    \scriptsize Wallet
+\end{minipage}\hfill
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.31\textheight,keepaspectratio]{images/Mockups/reader_profile.jpg}
+    \scriptsize Reader Profile
+\end{minipage}
+\caption{Mockup nhóm màn hình quản lý tài khoản độc giả}
+\label{fig:mockup-reader-account}
+\end{figure}
+
+Thư viện cá nhân giúp người đọc quay lại các truyện đang theo dõi hoặc đã mua. Ví điện tử hiển thị số dư, lịch sử giao dịch và các gói nạp, đóng vai trò cầu nối giữa hành vi đọc và hành vi thanh toán. Profile độc giả tổng hợp thông tin tài khoản, hoạt động đọc và các tuỳ chọn cá nhân, giúp tăng cảm giác sở hữu tài khoản trên nền tảng.
+
+\subsubsection{Nhóm màn hình Author}
+
+Nhóm Author được thiết kế cho người sáng tạo nội dung. Đây là điểm khác biệt quan trọng so với các trang đọc truyện không bản quyền, vì nền tảng không chỉ cần người đọc mà còn phải tạo động lực cho tác giả đăng tải và duy trì nội dung. Dashboard tác giả cần cho thấy hiệu quả xuất bản thông qua số liệu, trong khi các màn hình Upload và Publish giúp quá trình đăng truyện trở nên rõ ràng, có trạng thái và ít lỗi.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.31\textheight,keepaspectratio]{images/Mockups/author_dashboard.jpg}
+    \scriptsize Author Dashboard
+\end{minipage}\hfill
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.31\textheight,keepaspectratio]{images/Mockups/author_upload.jpg}
+    \scriptsize Upload
+\end{minipage}\hfill
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.31\textheight,keepaspectratio]{images/Mockups/author_publish.jpg}
+    \scriptsize Publish
+\end{minipage}
+\caption{Mockup luồng quản lý và xuất bản truyện của tác giả}
+\label{fig:mockup-author-publish}
+\end{figure}
+
+Dashboard tác giả thể hiện các chỉ số tổng quan như lượt đọc, doanh thu, tác phẩm và hiệu suất nội dung. Màn hình Upload hỗ trợ nhập thông tin truyện hoặc chương, chọn file, mô tả nội dung và các thiết lập liên quan. Modal Publish giúp xác nhận trước khi xuất bản, hạn chế lỗi đăng nhầm hoặc thiếu thông tin.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.45\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.34\textheight,keepaspectratio]{images/Mockups/author_profile.jpg}
+    \scriptsize Author Profile
+\end{minipage}\hfill
+\begin{minipage}{0.45\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.34\textheight,keepaspectratio]{images/Mockups/author_write_blog.jpg}
+    \scriptsize Write Blog
+\end{minipage}
+\caption{Mockup hồ sơ tác giả và chức năng viết blog}
+\label{fig:mockup-author-community}
+\end{figure}
+
+Hồ sơ tác giả giúp độc giả nhận diện người sáng tạo, xem tác phẩm và theo dõi hoạt động. Chức năng viết blog mở rộng vai trò của tác giả từ người đăng truyện sang người xây dựng cộng đồng, giúp tăng sự gắn bó giữa tác giả và độc giả.
+
+\subsubsection{Nhóm màn hình Admin}
+
+Nhóm Admin phục vụ vận hành hệ thống. Giao diện admin cần ưu tiên tính rõ ràng, khả năng quan sát số liệu và thao tác quản trị nhanh. Khác với giao diện Reader thiên về cảm xúc đọc, giao diện Admin cần nhiều bảng, chỉ số, trạng thái và bộ lọc để hỗ trợ kiểm duyệt, quản lý người dùng, theo dõi doanh thu và cấu hình nền tảng.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.45\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.38\textheight,keepaspectratio]{images/Mockups/admin_dashboard.jpg}
+    \scriptsize Admin Dashboard
+\end{minipage}\hfill
+\begin{minipage}{0.45\textwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.38\textheight,keepaspectratio]{images/Mockups/admin_settings.jpg}
+    \scriptsize Settings
+\end{minipage}
+\caption{Mockup màn hình quản trị hệ thống}
+\label{fig:mockup-admin}
+\end{figure}
+
+Dashboard admin tổng hợp các chỉ số như người dùng, doanh thu, tác phẩm, hoạt động gần đây và trạng thái kiểm duyệt. Màn hình Settings cho phép cấu hình thông tin nền tảng, chính sách thanh toán, thông báo và các thông số hệ thống. Việc tách khu vực quản trị khỏi giao diện độc giả giúp bảo đảm hệ thống có thể mở rộng vận hành khi số lượng truyện, giao dịch và người dùng tăng lên.
+
+\subsection{Đánh giá luồng trải nghiệm tổng thể}
+
+Từ các mockup trên, luồng UI/UX có thể được tóm tắt thành bốn hành trình chính:
+
+\begin{enumerate}
+    \item \textbf{Hành trình khám phá}: người dùng vào Home, xem các truyện nổi bật, chuyển sang Explore để lọc theo thể loại, sau đó vào Comic Detail để xem mô tả và danh sách chương.
+    \item \textbf{Hành trình đọc và trả phí}: người dùng đọc chương, gặp chương trả phí, xem modal Buy Comic, xác nhận Payment, sau đó quay lại màn hình đọc với trạng thái đã sở hữu.
+    \item \textbf{Hành trình giữ chân}: người dùng lưu truyện vào Library, quản lý Wallet, xem lịch sử giao dịch và cập nhật Profile. Đây là nhóm chức năng giúp tăng tần suất quay lại nền tảng.
+    \item \textbf{Hành trình xuất bản}: tác giả vào Dashboard, upload nội dung, publish chương, viết blog và theo dõi hiệu quả. Hành trình này giúp nền tảng có nguồn cung nội dung ổn định hơn.
+\end{enumerate}
+
+Nhìn chung, mockup đã bám khá sát mô hình kinh doanh của nền tảng truyện tranh số: đọc miễn phí có giới hạn, mua chương, ví điện tử, Premium, cộng đồng và dashboard tác giả. Điểm mạnh là hệ thống giao diện nhất quán về màu sắc, card nội dung và phân tách vai trò. Điểm cần tiếp tục hoàn thiện ở giai đoạn hiện thực là bổ sung trạng thái lỗi, trạng thái rỗng, skeleton loading, responsive mobile chi tiết và các thông báo bảo vệ người dùng khi thanh toán thất bại. Nếu các trạng thái này được xử lý tốt, UI/UX sẽ không chỉ đẹp về mặt trình bày mà còn hỗ trợ trực tiếp cho độ tin cậy và khả năng chuyển đổi của sản phẩm.
 
 \section{Kiến trúc hệ thống}
 \subsection{System Architecture Diagram}
